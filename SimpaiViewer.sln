@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
 VisualStudioVersion = 18.1.11312.151 d18.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Diffusion.Toolkit", "Diffusion.Toolkit\Diffusion.Toolkit.csproj", "{748CFC7D-004F-497B-86D9-3EB15EB39AD7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpaiViewer", "Diffusion.Toolkit\Diffusion.Toolkit.csproj", "{748CFC7D-004F-497B-86D9-3EB15EB39AD7}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestHarness", "TestHarness\TestHarness.csproj", "{C16561FC-2964-463B-8C47-F46CBFD8D2E9}"
 EndProject

@@ -1,6 +1,8 @@
-# Diffusion Toolkit
+# SimpaiViewer
 
-Diffusion Toolkit is an image metadata-indexer and viewer for AI-generated images. It aims to help you organize, search and sort your ever-growing collection.
+SimpaiViewer is an image metadata-indexer and viewer for AI-generated images. It aims to help you organize, search and sort your ever-growing collection.
+
+> SimpaiViewer is a fork of [Diffusion Toolkit](https://github.com/RupertAvery/DiffusionToolkit) by Rupert Avery. Upstream credit and license are preserved.
 
 # Usage
 
@@ -15,9 +17,9 @@ Thanks to Bill Meeks for putting together a demonstration video. This is for an 
 * Currently runs on Windows only 
 * [Download](https://github.com/RupertAvery/DiffusionToolkit/releases/latest
 ) the latest release 
-    * Look for **> Assets** under the latest release, expand it, then grab the zip file **Diffusion.Toolkit.v1.x.zip**.
+    * Look for **> Assets** under the latest release, expand it, then grab the zip file **SimpaiViewer.v1.x.zip**.
 * Unzip all the files to a folder
-* You may need to install the [.NET 6 Desktop Runtime](https://dotnet.microsoft.com/en-us/download/dotnet/6.0) if you haven't already
+* You may need to install the [.NET 10 Desktop Runtime](https://dotnet.microsoft.com/en-us/download/dotnet/10.0) if you haven't already
 
 # Build from source
 

@@ -6,12 +6,19 @@
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
 	<UseWindowsForms>true</UseWindowsForms>
-    <ApplicationIcon>diffusion-toolkit.ico</ApplicationIcon>
+    <AssemblyName>SimpaiViewer</AssemblyName>
+    <RootNamespace>Diffusion.Toolkit</RootNamespace>
+    <ApplicationIcon>simpai-viewer.ico</ApplicationIcon>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+    <AssemblyTitle>SimpaiViewer</AssemblyTitle>
+    <Product>SimpaiViewer</Product>
+    <Company>SimpaiViewer Project</Company>
+    <Description>SimpaiViewer - image metadata-indexer and viewer for AI-generated images (fork of Diffusion Toolkit)</Description>
+    <Copyright>Copyright (c) 2026 SimpaiViewer Project</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="DiffusionToolkit.log" />
+    <None Remove="SimpaiViewer.log" />
     <None Remove="Icons\blue-heart-32.png" />
     <None Remove="Icons\copy-32.png" />
     <None Remove="Icons\Dark\copy-32.png" />
@@ -87,7 +94,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="diffusion-toolkit.ico" />
+    <Content Include="simpai-viewer.ico" />
   </ItemGroup>
 
   <ItemGroup>

@@ -31,7 +31,7 @@ namespace Diffusion.Updater
             }
 
             _targetPath = args[1];
-            _exePath = Path.Join(_targetPath, "Diffusion.Toolkit.exe");
+            _exePath = Path.Join(_targetPath, "SimpaiViewer.exe");
 
             if (!Directory.Exists(_targetPath) || !File.Exists(_exePath))
             {
@@ -158,7 +158,7 @@ namespace Diffusion.Updater
         private void TryKillProcess()
         {
             string targetProcessPath = Path.Join(_exePath);
-            string targetProcessName = "Diffusion.Toolkit";
+            string targetProcessName = "SimpaiViewer";
 
             Process[] runningProcesses = Process.GetProcesses();
             foreach (Process process in runningProcesses)

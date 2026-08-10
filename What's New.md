@@ -1,4 +1,13 @@
 
+# SimpaiViewer Phase 1
+
+* Forked from Diffusion Toolkit and rebranded as **SimpaiViewer**
+* Default UI language: Chinese (中文); English still available in Settings > General > Language
+* Default theme: Dark (no white flash on cold start)
+* Metadata panel reworked: parameters shown one-per-line with aligned labels and monospace values (no more wall-of-text)
+* Preview pane: mouse wheel switches images; Ctrl+wheel zooms; double-click enters/exits fullscreen
+* Adjacent thumbnails are prefetched (±3) for smooth rapid browsing in large folders
+
 # What's New in v0.9
 
 * Rescan folders renamed to **Scan folders for new images** (icon also changed)
