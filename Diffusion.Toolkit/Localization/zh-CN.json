@@ -434,5 +434,17 @@
   "Simpai.ToolTips.Prompts": "提示词",
   "Simpai.ToolTips.Models": "模型",
   "Simpai.ToolTips.Settings": "设置",
-  "Simpai.ToolTips.ScanFolders": "扫描文件夹中的新图片 (Ctrl+R)"
+  "Simpai.ToolTips.ScanFolders": "扫描文件夹中的新图片 (Ctrl+R)",
+  "Simpai.Metadata.Parameters": "参数",
+  "Simpai.Metadata.AestheticScore": "美学评分",
+  "Simpai.Metadata.HyperNetwork": "HyperNetwork",
+  "Simpai.Metadata.ClipSkip": "Clip Skip",
+  "Simpai.Metadata.ENSD": "ENSD",
+  "Simpai.Metadata.FileSize": "文件大小",
+  "Simpai.Metadata.Created": "创建时间",
+  "Simpai.Metadata.Modified": "修改时间",
+  "Simpai.Metadata.Copy": "复制",
+  "Simpai.Metadata.RawMetadata": "原始元数据",
+  "Simpai.Metadata.CollapseAll": "全部折叠",
+  "Simpai.Metadata.ExpandAll": "全部展开"
 }

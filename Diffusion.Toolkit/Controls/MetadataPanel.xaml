@@ -14,13 +14,23 @@
         <converters:SizeConverter x:Key="SizeConverter"></converters:SizeConverter>
         <converters:ZeroConverter x:Key="ZeroConverter"></converters:ZeroConverter>
         <converters:BoolToVisibilityConverter x:Key="boolToVis"></converters:BoolToVisibilityConverter>
+        <DataTemplate x:Key="MetadataItemTemplate">
+            <Grid Margin="5,1,5,1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="140"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text="{Binding Key}" FontWeight="SemiBold" VerticalAlignment="Top" Padding="5,3" TextWrapping="Wrap"/>
+                <TextBox Grid.Column="1" Text="{Binding Value}" FontFamily="Consolas" FontSize="13" BorderThickness="0" Background="Transparent" IsReadOnly="True" Padding="5,3" TextWrapping="Wrap"/>
+            </Grid>
+        </DataTemplate>
     </UserControl.Resources>
     <Grid x:Name="Root" Background="Transparent"
         DataContext="{Binding CurrentImage, RelativeSource={RelativeSource AncestorLevel=1, Mode=FindAncestor, AncestorType=UserControl}}">
         <Grid.ContextMenu>
             <ContextMenu>
-                <MenuItem Header="Collapse All" Click="CollapseAll_Click"></MenuItem>
-                <MenuItem Header="Expand All" Click="ExpandAll_Click"></MenuItem>
+                <MenuItem Header="{lex:Loc Simpai.Metadata.CollapseAll}" Click="CollapseAll_Click"></MenuItem>
+                <MenuItem Header="{lex:Loc Simpai.Metadata.ExpandAll}" Click="ExpandAll_Click"></MenuItem>
             </ContextMenu>
         </Grid.ContextMenu>
 
@@ -28,6 +38,15 @@
             <TabItem Header="Metadata" Background="Transparent" HorizontalContentAlignment="Stretch">
                 <ScrollViewer Background="Transparent" VerticalScrollBarVisibility="Auto">
                     <StackPanel Background="Transparent">
+
+                        <local:AccordionControl x:Name="ParametersMetadata" 
+                                                   HeaderBackground="#80000000" 
+                                                   Header="{lex:Loc Simpai.Metadata.Parameters}"
+                                                   Margin="0,0,0,5"
+                                                   State="{Binding MetadataSection.ParametersState, RelativeSource={RelativeSource AncestorLevel=1, Mode=FindAncestor, AncestorType=UserControl}, Mode=TwoWay}" 
+                                                   >
+                            <ItemsControl ItemsSource="{Binding ParameterItems}" ItemTemplate="{StaticResource MetadataItemTemplate}"/>
+                        </local:AccordionControl>
 
                         <local:AccordionControl x:Name="PromptMetadata" 
                                                    HeaderBackground="#80000000" 
@@ -153,9 +172,7 @@
                                     <Button Style="{DynamicResource BorderlessButton}" Grid.Column="1" Command="{Binding CopyOthersCommand}" Content="{lex:Loc Metadata.Buttons.Copy}"/>
                                 </Grid>
                             </local:AccordionControl.ButtonAreaContent>
-                            <TextBox Background="#00000000" FontSize="14" BorderThickness="0"
-                                     IsReadOnly="True"
-                                     Padding="5" TextWrapping="WrapWithOverflow" Text="{Binding OtherParameters}"/>
+                            <ItemsControl ItemsSource="{Binding OtherParameterItems}" ItemTemplate="{StaticResource MetadataItemTemplate}"/>
                         </local:AccordionControl>
 
                         <local:AccordionControl x:Name="PathMetadata" 
@@ -282,12 +299,19 @@
                     <local:ComfyNodeStack Nodes="{Binding Nodes}" Background="Transparent"></local:ComfyNodeStack>
                 </ScrollViewer>
             </TabItem>
-            <TabItem Header="Raw Metadata" Background="Transparent" HorizontalContentAlignment="Stretch">
-                <ScrollViewer Grid.Row="0" Background="Transparent" 
-                              VerticalAlignment="Stretch"
-                              VerticalScrollBarVisibility="Auto">
-                    <TextBox FontFamily="Consolas" Padding="5" TextWrapping="Wrap" IsReadOnly="True" Margin="5" Text="{Binding Workflow}" Foreground="{StaticResource ForegroundBrush}"></TextBox>
-                </ScrollViewer>
+            <TabItem Header="{lex:Loc Simpai.Metadata.RawMetadata}" Background="Transparent" HorizontalContentAlignment="Stretch">
+                <Grid Background="Transparent">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Button Style="{DynamicResource BorderlessButton}" HorizontalAlignment="Right" Margin="5,5,10,0" Click="CopyRawMetadata_Click" Content="{lex:Loc Simpai.Metadata.Copy}"/>
+                    <ScrollViewer Grid.Row="1" Background="Transparent" 
+                                  VerticalAlignment="Stretch"
+                                  VerticalScrollBarVisibility="Auto">
+                        <TextBox FontFamily="Consolas" Padding="5" TextWrapping="Wrap" IsReadOnly="True" Margin="5" Text="{Binding Workflow}" Foreground="{DynamicResource ForegroundBrush}"></TextBox>
+                    </ScrollViewer>
+                </Grid>
             </TabItem>
             <TabItem Visibility="{Binding HasError, Converter={StaticResource boolToVis}}" Header="Errors" Background="Transparent" HorizontalContentAlignment="Stretch">
                 <Grid>

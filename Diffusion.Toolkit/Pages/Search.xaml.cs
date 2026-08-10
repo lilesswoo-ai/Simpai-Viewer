@@ -1138,6 +1138,10 @@ namespace Diffusion.Toolkit.Pages
                     imageViewModel.ModelHash = parameters.ModelHash;
                     imageViewModel.Seed = parameters.Seed;
                     imageViewModel.AestheticScore = $"{parameters.AestheticScore}";
+                    imageViewModel.HyperNetwork = parameters.HyperNetwork;
+                    imageViewModel.ClipSkip = parameters.ClipSkip;
+                    imageViewModel.ENSD = parameters.ENSD;
+                    imageViewModel.FileSize = parameters.FileSize > 0 ? parameters.FileSize : image?.Size ?? 0;
 
                     imageViewModel.Workflow = parameters.Workflow;
                     imageViewModel.Type = parameters.Type;

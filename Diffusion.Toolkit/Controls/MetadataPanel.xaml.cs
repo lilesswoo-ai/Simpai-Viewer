@@ -76,6 +76,7 @@ namespace Diffusion.Toolkit.Controls
 
         private void SetMetadataState(AccordionState state)
         {
+            ParametersMetadata.State = state;
             PromptMetadata.State = state;
             NegativePromptMetadata.State = state;
             SeedMetadata.State = state;
@@ -85,6 +86,14 @@ namespace Diffusion.Toolkit.Controls
             PathMetadata.State = state;
             AlbumMetadata.State = state;
             DateMetadata.State = state;
+        }
+
+        private void CopyRawMetadata_Click(object sender, RoutedEventArgs e)
+        {
+            if (CurrentImage?.Workflow is { Length: > 0 } workflow)
+            {
+                Clipboard.SetText(workflow);
+            }
         }
 
         private void AlbumName_OnMouseDown(object sender, MouseButtonEventArgs e)

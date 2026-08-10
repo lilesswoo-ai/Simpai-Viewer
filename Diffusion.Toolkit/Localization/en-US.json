@@ -387,5 +387,17 @@
   "Simpai.ToolTips.Prompts": "Prompts",
   "Simpai.ToolTips.Models": "Models",
   "Simpai.ToolTips.Settings": "Settings",
-  "Simpai.ToolTips.ScanFolders": "Scan folders for new images (Ctrl+R)"
+  "Simpai.ToolTips.ScanFolders": "Scan folders for new images (Ctrl+R)",
+  "Simpai.Metadata.Parameters": "Parameters",
+  "Simpai.Metadata.AestheticScore": "Aesthetic Score",
+  "Simpai.Metadata.HyperNetwork": "HyperNetwork",
+  "Simpai.Metadata.ClipSkip": "Clip Skip",
+  "Simpai.Metadata.ENSD": "ENSD",
+  "Simpai.Metadata.FileSize": "File Size",
+  "Simpai.Metadata.Created": "Created",
+  "Simpai.Metadata.Modified": "Modified",
+  "Simpai.Metadata.Copy": "Copy",
+  "Simpai.Metadata.RawMetadata": "Raw Metadata",
+  "Simpai.Metadata.CollapseAll": "Collapse All",
+  "Simpai.Metadata.ExpandAll": "Expand All"
 }

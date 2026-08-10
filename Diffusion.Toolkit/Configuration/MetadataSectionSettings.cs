@@ -16,6 +16,12 @@ public class MetadataSectionSettings : SettingsContainer
         set => UpdateValue(ref field, value);
     }
 
+    public AccordionState ParametersState
+    {
+        get;
+        set => UpdateValue(ref field, value);
+    }
+
     public AccordionState NegativePromptState
     {
         get;
