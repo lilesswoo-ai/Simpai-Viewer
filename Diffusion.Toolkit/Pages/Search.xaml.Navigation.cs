@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Diffusion.Toolkit.Services;
 
 namespace Diffusion.Toolkit.Pages
 {
@@ -61,6 +62,8 @@ namespace Diffusion.Toolkit.Pages
                 ThumbnailListView.ShowItem(currentIndex + 1);
                 _model.SelectedImageEntry = _model.Images[currentIndex + 1];
                 ThumbnailListView.ThumbnailListView.SelectedItem = _model.SelectedImageEntry;
+
+                if (!isPaging) PrefetchAdjacent();
             }
             else
             {
@@ -103,6 +106,8 @@ namespace Diffusion.Toolkit.Pages
                 ThumbnailListView.ShowItem(currentIndex - 1);
                 _model.SelectedImageEntry = _model.Images[currentIndex - 1];
                 ThumbnailListView.ThumbnailListView.SelectedItem = _model.SelectedImageEntry;
+
+                if (!isPaging) PrefetchAdjacent();
             }
             else
             {
@@ -136,6 +141,46 @@ namespace Diffusion.Toolkit.Pages
                 }
             }
 
+        }
+
+        /// <summary>
+        /// Number of images on each side of the cursor to prefetch.
+        /// </summary>
+        private const int PrefetchDistance = 3;
+
+        /// <summary>
+        /// Queues prefetch thumbnails for the images immediately before and
+        /// after the currently selected image (alternating right/left, one
+        /// image per side per distance). Called only on cursor navigation
+        /// (wheel / arrow keys / auto-advance); page flips are handled by the
+        /// paging mechanism and intentionally skipped.
+        /// </summary>
+        private void PrefetchAdjacent()
+        {
+            var images = _model.Images;
+            var selected = _model.SelectedImageEntry;
+            if (images == null || selected == null) return;
+
+            var index = images.IndexOf(selected);
+            if (index < 0) return;
+
+            var count = images.Count;
+            var service = ServiceLocator.ThumbnailService;
+
+            for (var distance = 1; distance <= PrefetchDistance; distance++)
+            {
+                var right = index + distance;
+                if (right < count && !images[right].IsEmpty)
+                {
+                    service.QueuePrefetch(images[right]);
+                }
+
+                var left = index - distance;
+                if (left >= 0 && !images[left].IsEmpty)
+                {
+                    service.QueuePrefetch(images[left]);
+                }
+            }
         }
 
     }

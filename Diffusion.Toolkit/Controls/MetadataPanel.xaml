@@ -20,8 +20,8 @@
                     <ColumnDefinition Width="140"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="{Binding Key}" FontWeight="SemiBold" VerticalAlignment="Top" Padding="5,3" TextWrapping="Wrap"/>
-                <TextBox Grid.Column="1" Text="{Binding Value}" FontFamily="Consolas" FontSize="13" BorderThickness="0" Background="Transparent" IsReadOnly="True" Padding="5,3" TextWrapping="Wrap"/>
+                <TextBlock Grid.Column="0" Text="{Binding Key, Mode=OneWay}" FontWeight="SemiBold" VerticalAlignment="Top" Padding="5,3" TextWrapping="Wrap"/>
+                <TextBox Grid.Column="1" Text="{Binding Value, Mode=OneWay}" FontFamily="Consolas" FontSize="13" BorderThickness="0" Background="Transparent" IsReadOnly="True" Padding="5,3" TextWrapping="Wrap"/>
             </Grid>
         </DataTemplate>
     </UserControl.Resources>

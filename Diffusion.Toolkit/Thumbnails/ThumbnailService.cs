@@ -145,6 +145,75 @@ public class ThumbnailService
         });
     }
 
+    // ---------------------------------------------------------------------
+    // Prefetch support (adjacent thumbnail preloading while browsing)
+    // ---------------------------------------------------------------------
+
+    private const int MaxPrefetchInFlight = 60;
+
+    private readonly HashSet<string> _prefetchInFlight = new(StringComparer.OrdinalIgnoreCase);
+    private readonly object _prefetchLock = new();
+
+    /// <summary>
+    /// Queues a low-priority prefetch for an adjacent image. Prefetch jobs:
+    ///  - never raise <see cref="ImageEntry.LoadState"/> to Loading (no UI flicker),
+    ///  - never mark the image Unavailable on failure,
+    ///  - drop silently when the batch changes,
+    ///  - write successful decodes straight into the shared disk cache.
+    /// Duplicate and already-loaded paths are skipped; an in-flight cap keeps
+    /// rapid navigation from flooding the queue.
+    /// </summary>
+    public void QueuePrefetch(ImageEntry image)
+    {
+        if (image == null) return;
+        if (image.EntryType != EntryType.File) return;
+        if (image.Unavailable) return;
+        if (image.LoadState is LoadState.Loading or LoadState.Loaded) return;
+        if (string.IsNullOrEmpty(image.Path)) return;
+
+        if (_enableCache && ThumbnailCache.Instance.TryGetThumbnail(image.Path, Size, out _))
+        {
+            return;
+        }
+
+        lock (_prefetchLock)
+        {
+            if (_prefetchInFlight.Contains(image.Path)) return;
+            if (_prefetchInFlight.Count >= MaxPrefetchInFlight) return;
+            _prefetchInFlight.Add(image.Path);
+        }
+
+        var job = new ThumbnailJob()
+        {
+            BatchId = image.BatchId,
+            EntryType = image.EntryType,
+            Path = image.Path,
+            Type = image.Type,
+            Height = image.Height,
+            Width = image.Width,
+            IsPrefetch = true
+        };
+
+        _ = QueueAsync(job, (d) =>
+        {
+            lock (_prefetchLock)
+            {
+                _prefetchInFlight.Remove(image.Path);
+            }
+
+            // Failures are intentionally silent: do NOT mark Unavailable.
+            if (!d.Success) return;
+
+            _dispatcher.Invoke(() =>
+            {
+                image.Thumbnail = d.Image;
+                image.ThumbnailHeight = d.Image.Height;
+                image.ThumbnailWidth = d.Image.Width;
+                image.LoadState = LoadState.Loaded;
+            });
+        });
+    }
+
 
     public int Size
     {
