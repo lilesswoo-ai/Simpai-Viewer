@@ -32,7 +32,7 @@
         </Style>
     </Window.Style>
     <Window.InputBindings>
-        <KeyBinding Key="Escape" Command="{Binding Close}"></KeyBinding>
+        <KeyBinding Key="Escape" Command="{Binding Escape}"></KeyBinding>
         <KeyBinding Key="F" Modifiers="Control+Shift" Command="{Binding ToggleFitToPreview}"></KeyBinding>
         <KeyBinding Key="A" Modifiers="Control+Shift" Command="{Binding ToggleActualSize}"></KeyBinding>
         <KeyBinding Key="T" Command="{Binding ToggleTagsCommand}"></KeyBinding>

@@ -689,6 +689,8 @@ namespace Diffusion.Toolkit.Pages
 
         public Action<ImageViewModel> OnCurrentImageOpen { get; set; }
 
+        public Action<ImageViewModel> OnFullScreenOpen { get; set; }
+
         private void OpenImage(object obj)
         {
             OnCurrentImageOpen?.Invoke(_model.CurrentImage);

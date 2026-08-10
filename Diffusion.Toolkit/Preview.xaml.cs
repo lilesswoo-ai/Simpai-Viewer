@@ -46,6 +46,18 @@ namespace Diffusion.Toolkit
                 Close();
             });
 
+            _model.Escape = new RelayCommand<object>(o =>
+            {
+                if (_isFullScreen)
+                {
+                    ToggleFullScreen();
+                }
+                else
+                {
+                    Close();
+                }
+            });
+
             PreviewPane.IsPopout = true;
 
             ServiceLocator.TaggingService.TagUpdated += (sender, arguments) =>
@@ -212,7 +224,14 @@ namespace Diffusion.Toolkit
 
         private void PreviewPane_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            Close();
+            if (_isFullScreen)
+            {
+                ToggleFullScreen();
+            }
+            else
+            {
+                Close();
+            }
         }
 
         private void Play_OnMouseDown(object sender, MouseButtonEventArgs e)

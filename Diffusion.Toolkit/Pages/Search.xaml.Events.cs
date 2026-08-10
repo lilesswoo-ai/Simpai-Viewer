@@ -94,7 +94,7 @@ namespace Diffusion.Toolkit.Pages
 
         private void PreviewPane_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            OnCurrentImageOpen?.Invoke(_model.CurrentImage);
+            OnFullScreenOpen?.Invoke(_model.CurrentImage);
         }
 
         private void UIElement_OnPreviewMouseWheel(object sender, MouseWheelEventArgs e)

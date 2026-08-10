@@ -433,6 +433,26 @@ namespace Diffusion.Toolkit
             }
         }
 
+        /// <summary>
+        /// Opens the preview window in fullscreen for the current image.
+        /// Reuses the existing popout window when present (bringing it to
+        /// fullscreen) instead of creating a second window.
+        /// </summary>
+        private void OpenFullScreen(ImageViewModel image)
+        {
+            if (image == null) return;
+
+            if (_previewWindow == null)
+            {
+                PopoutPreview(false, true, true);
+            }
+            else
+            {
+                _previewWindow.SetCurrentImage(image);
+                _previewWindow.ShowFullScreen();
+            }
+        }
+
         private void SearchOnNavigationCompleted(object? sender, EventArgs e)
         {
             _previewWindow?.SetFocus();
@@ -792,6 +812,7 @@ namespace Diffusion.Toolkit
 
             _search.OnPopout = () => PopoutPreview(true, true, false);
             _search.OnCurrentImageOpen = OnCurrentImageOpen;
+            _search.OnFullScreenOpen = OpenFullScreen;
 
             _model.GotoUrl = new RelayCommand<string>((url) =>
             {

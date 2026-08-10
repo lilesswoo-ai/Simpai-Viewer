@@ -29,6 +29,7 @@ public class Settings : SettingsContainer, IScanOptions
         OpenInFullScreen = true;
         CustomCommandLineArgs = "%1";
         Culture = "zh-CN";
+        ScrollNavigation = true;
 
         SortAlbumsBy = "Name";
         SortBy = "Date Created";
