@@ -538,7 +538,7 @@ namespace Diffusion.Toolkit
                     _settings.NavigationSection.Attach(_settings);
                     _settings.UseBuiltInViewer ??= true;
                     _settings.SortAlbumsBy ??= "Name";
-                    _settings.Theme ??= "System";
+                    _settings.Theme ??= "Dark";
 
                     UpdateTheme(_settings.Theme);
 
@@ -628,7 +628,7 @@ namespace Diffusion.Toolkit
                 this.Left = _settings.Left.Value;
             }
 
-            _settings.Culture ??= "default";
+            _settings.Culture ??= "zh-CN";
 
             if (_settings.Culture == "default")
             {

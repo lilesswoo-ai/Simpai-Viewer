@@ -13,6 +13,8 @@
     <Color x:Key="Foreground">#000000</Color>
     <Color x:Key="PreviewBackground">DarkGray</Color>
     <Color x:Key="ToastBackground">#00D6E0</Color>
+    <Color x:Key="WarningBackground">#FFF3CD</Color>
+    <Color x:Key="WarningForeground">#664D03</Color>
 
 
     <BitmapImage  x:Key="CopyIcon" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="pack://application:,,,/Icons/Light/copy-32.png" />

@@ -22,13 +22,13 @@ public class Settings : SettingsContainer, IScanOptions
     {
         NSFWTags = new List<string>() { "nsfw", "nude", "naked" };
         FileExtensions = ".png, .jpg, .jpeg, .webp";
-        Theme = "System";
+        Theme = "Dark";
         PageSize = 100;
         ThumbnailSize = 128;
         UseBuiltInViewer = true;
         OpenInFullScreen = true;
         CustomCommandLineArgs = "%1";
-        Culture = "default";
+        Culture = "zh-CN";
 
         SortAlbumsBy = "Name";
         SortBy = "Date Created";

@@ -111,7 +111,7 @@
                 </StackPanel>
 
                 <StackPanel Grid.Column="2" VerticalAlignment="Center" Margin="0,0,10,0" Orientation="Horizontal">
-                    <Border Margin="0,0,10,0" Visibility="{Binding MainModel.HasSelectedModels, Converter={StaticResource boolToVisCol}}" Background="SeaGreen" CornerRadius="6" Height="24" Padding="6,0,6,0">
+                    <Border Margin="0,0,10,0" Visibility="{Binding MainModel.HasSelectedModels, Converter={StaticResource boolToVisCol}}" Background="{DynamicResource ToastBrush}" CornerRadius="6" Height="24" Padding="6,0,6,0">
                         <StackPanel Orientation="Horizontal">
                             <Label FontSize="10" Content="{lex:Loc Search.Navigation.Models}"></Label>
                             <Label FontSize="12" Content="{Binding MainModel.SelectedModelsCount}"></Label>
@@ -120,7 +120,7 @@
                             </Button>
                         </StackPanel>
                     </Border>
-                    <Border Margin="0,0,10,0" Visibility="{Binding MainModel.HasSelectedAlbums, Converter={StaticResource boolToVisCol}}" Background="SeaGreen" CornerRadius="6" Height="24" Padding="6,0,6,0">
+                    <Border Margin="0,0,10,0" Visibility="{Binding MainModel.HasSelectedAlbums, Converter={StaticResource boolToVisCol}}" Background="{DynamicResource ToastBrush}" CornerRadius="6" Height="24" Padding="6,0,6,0">
                         <StackPanel Orientation="Horizontal">
                             <Label FontSize="10">Albums:</Label>
                             <Label FontSize="12" Content="{Binding MainModel.SelectedAlbumsCount}"></Label>
@@ -129,7 +129,7 @@
                             </Button>
                         </StackPanel>
                     </Border>
-                    <Border Margin="0,0,10,0" Visibility="{Binding MainModel.HasSelectedTags, Converter={StaticResource boolToVisCol}}" Background="SeaGreen" CornerRadius="6" Height="24" Padding="6,0,6,0">
+                    <Border Margin="0,0,10,0" Visibility="{Binding MainModel.HasSelectedTags, Converter={StaticResource boolToVisCol}}" Background="{DynamicResource ToastBrush}" CornerRadius="6" Height="24" Padding="6,0,6,0">
                         <StackPanel Orientation="Horizontal">
                             <Label FontSize="10">Tags:</Label>
                             <Label FontSize="12" Content="{Binding MainModel.SelectedTagsCount}"></Label>
@@ -895,24 +895,24 @@
                                                   KeyUp="FolderPath_OnKeyDown"
                                         ></TextBox>
                                     </DockPanel>
-                                    <Grid Background="AntiqueWhite" Height="30" DockPanel.Dock="Top">
+                                    <Grid Background="{DynamicResource WarningBrush}" Height="30" DockPanel.Dock="Top">
                                         <Grid.Visibility>
                                             <MultiBinding Converter="{StaticResource MultiBoolToVisibilityCollapsedConverter}">
                                                 <Binding Path="MainModel.CurrentFolder.IsNotScanned"></Binding>
                                                 <Binding Path="IsFolderView"></Binding>
                                             </MultiBinding>
                                         </Grid.Visibility>
-                                        <Label Content="{lex:Loc Search.Folders.NotScanned}" Foreground="Black" VerticalContentAlignment="Center" MouseDown="NotScanned_OnMouseDown"></Label>
+                                        <Label Content="{lex:Loc Search.Folders.NotScanned}" Foreground="{DynamicResource WarningForegroundBrush}" VerticalContentAlignment="Center" MouseDown="NotScanned_OnMouseDown"></Label>
                                     </Grid>
 
-                                    <Grid Background="AntiqueWhite" Height="30" DockPanel.Dock="Top">
+                                    <Grid Background="{DynamicResource WarningBrush}" Height="30" DockPanel.Dock="Top">
                                         <Grid.Visibility>
                                             <MultiBinding Converter="{StaticResource MultiBoolToVisibilityCollapsedConverter}">
                                                 <Binding Path="MainModel.CurrentFolder.IsHome"></Binding>
                                                 <Binding Path="IsFolderView"></Binding>
                                             </MultiBinding>
                                         </Grid.Visibility>
-                                        <Label Content="{lex:Loc Search.Folders.ManageExcluded}" Foreground="Black" VerticalContentAlignment="Center" MouseDown="NotScanned_OnMouseDown"></Label>
+                                        <Label Content="{lex:Loc Search.Folders.ManageExcluded}" Foreground="{DynamicResource WarningForegroundBrush}" VerticalContentAlignment="Center" MouseDown="NotScanned_OnMouseDown"></Label>
                                     </Grid>
 
                                     <Grid>

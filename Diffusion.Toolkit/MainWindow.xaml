@@ -80,7 +80,7 @@
                         </Grid.ColumnDefinitions>
                         <Border Background="{x:Null}" Grid.Column="1" Margin="0,10,0,0" BorderThickness="1" CornerRadius="10" BorderBrush="{DynamicResource SecondaryBrush}" Width="300">
                             <Grid Background="Transparent" MouseDown="QueryBar_OnMouseDown">
-                                <Label Foreground="{DynamicResource ForegroundBrush}" HorizontalContentAlignment="Center">Diffusion Toolkit</Label>
+                                <Label Foreground="{DynamicResource ForegroundBrush}" HorizontalContentAlignment="Center">SimpaiViewer</Label>
                                 <fa:ImageAwesome HorizontalAlignment="Left" Margin="10,0,0,0" Icon="Search" Width="12" ToolTip="{lex:Loc QueryBar.Query.ToolTip}" PreviewMouseDown="QueryBar_OnMouseDown">
                                     <fa:ImageAwesome.Style>
                                         <Style TargetType="fa:ImageAwesome">
@@ -198,7 +198,7 @@
                         </Grid.ColumnDefinitions>
                         <Border Background="{x:Null}" Grid.Column="1" Margin="0,10,0,0" BorderThickness="1" CornerRadius="10" BorderBrush="{DynamicResource SecondaryBrush}" Width="200">
                             <Grid Background="Transparent" MouseDown="QueryBar_OnMouseDown">
-                                <Label Foreground="{DynamicResource ForegroundBrush}" HorizontalContentAlignment="Center">Diffusion Toolkit</Label>
+                                <Label Foreground="{DynamicResource ForegroundBrush}" HorizontalContentAlignment="Center">SimpaiViewer</Label>
                                 <fa:ImageAwesome HorizontalAlignment="Left" Margin="10,0,0,0" Icon="Search" Width="12" ToolTip="{lex:Loc QueryBar.Query.ToolTip}" PreviewMouseDown="QueryBar_OnMouseDown">
                                     <fa:ImageAwesome.Style>
                                         <Style TargetType="fa:ImageAwesome">
@@ -339,11 +339,11 @@
                             </fa:ImageAwesome>
                         </Button>
                         <Button Margin="0,0,15,0" Style="{DynamicResource BorderlessButton}" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Command="{Binding TogglePreview}">
-                            <fa:ImageAwesome ToolTip="Show/Hide Preview" Icon="Columns" Width="16"  Foreground="{DynamicResource ForegroundBrush}" VerticalAlignment="Center" HorizontalAlignment="Center">
+                            <fa:ImageAwesome ToolTip="{lex:Loc Simpai.ToolTips.ShowHidePreview}" Icon="Columns" Width="16"  Foreground="{DynamicResource ForegroundBrush}" VerticalAlignment="Center" HorizontalAlignment="Center">
                             </fa:ImageAwesome>
                         </Button>
                         <Button Margin="0,0,0,0" Style="{DynamicResource BorderlessButton}" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Command="{Binding PoputPreview}">
-                            <fa:ImageAwesome ToolTip="Pop out Preview" Icon="WindowRestore" Width="16"  Foreground="{DynamicResource ForegroundBrush}" VerticalAlignment="Center" HorizontalAlignment="Center">
+                            <fa:ImageAwesome ToolTip="{lex:Loc Simpai.ToolTips.PopOutPreview}" Icon="WindowRestore" Width="16"  Foreground="{DynamicResource ForegroundBrush}" VerticalAlignment="Center" HorizontalAlignment="Center">
                             </fa:ImageAwesome>
                         </Button>
                     </StackPanel>
@@ -452,52 +452,52 @@
                         <Button Margin="0,5,0,10" Height="16" Width="24" 
                                 behaviors:DTBehaviors.IsSelected="{Binding ActiveView, Converter={StaticResource StringMatchConverter}, ConverterParameter=Folders}"
                                 Style="{StaticResource BorderlessToolbarButton}" Command="{Binding GotoUrl}" CommandParameter="search/#folders">
-                            <fa:ImageAwesome ToolTip="Folders (Ctrl+1)" Icon="FolderOutlinepenOutline" Width="16" Foreground="{DynamicResource ForegroundBrush}" VerticalAlignment="Center" HorizontalAlignment="Center">
+                            <fa:ImageAwesome ToolTip="{lex:Loc Simpai.ToolTips.Folders}" Icon="FolderOutlinepenOutline" Width="16" Foreground="{DynamicResource ForegroundBrush}" VerticalAlignment="Center" HorizontalAlignment="Center">
                             </fa:ImageAwesome>
                         </Button>
                         <Button Margin="0,5,0,10" Height="16" Width="24" 
                                 behaviors:DTBehaviors.IsSelected="{Binding ActiveView, Converter={StaticResource StringMatchConverter}, ConverterParameter=Diffusions}"
                                 Style="{StaticResource BorderlessToolbarButton}" Command="{Binding GotoUrl}" CommandParameter="search/#images">
-                            <fa:ImageAwesome ToolTip="Search (Ctrl+2)" Icon="Search" Width="16" Foreground="{DynamicResource ForegroundBrush}" VerticalAlignment="Center" HorizontalAlignment="Center">
+                            <fa:ImageAwesome ToolTip="{lex:Loc Simpai.ToolTips.Search}" Icon="Search" Width="16" Foreground="{DynamicResource ForegroundBrush}" VerticalAlignment="Center" HorizontalAlignment="Center">
                             </fa:ImageAwesome>
                         </Button>
                         <Button Margin="0,5,0,10" Height="16" Width="24" 
                                 behaviors:DTBehaviors.IsSelected="{Binding ActiveView, Converter={StaticResource StringMatchConverter}, ConverterParameter=Favorites}"
                                 Style="{StaticResource BorderlessToolbarButton}" Command="{Binding GotoUrl}" CommandParameter="search/#favorites">
-                            <fa:ImageAwesome ToolTip="Favorites (Ctrl+3)" Icon="HeartOutline" Width="16" Foreground="{DynamicResource ForegroundBrush}" VerticalAlignment="Center" HorizontalAlignment="Center">
+                            <fa:ImageAwesome ToolTip="{lex:Loc Simpai.ToolTips.Favorites}" Icon="HeartOutline" Width="16" Foreground="{DynamicResource ForegroundBrush}" VerticalAlignment="Center" HorizontalAlignment="Center">
                             </fa:ImageAwesome>
                         </Button>
                         <Button Margin="0,5,0,10" Height="16" Width="24" 
                                 behaviors:DTBehaviors.IsSelected="{Binding ActiveView, Converter={StaticResource StringMatchConverter}, ConverterParameter=For Deletion}"
                                 Style="{StaticResource BorderlessToolbarButton}" Command="{Binding GotoUrl}" CommandParameter="search/#deleted">
-                            <fa:ImageAwesome ToolTip="For Deletion (Ctrl+4)" Icon="TrashOutline" Width="16" Foreground="{DynamicResource ForegroundBrush}" VerticalAlignment="Center" HorizontalAlignment="Center">
+                            <fa:ImageAwesome ToolTip="{lex:Loc Simpai.ToolTips.ForDeletion}" Icon="TrashOutline" Width="16" Foreground="{DynamicResource ForegroundBrush}" VerticalAlignment="Center" HorizontalAlignment="Center">
                             </fa:ImageAwesome>
                         </Button>
                         <Separator BorderThickness="1" BorderBrush="{DynamicResource SecondaryBrush}"></Separator>
                         <Button Margin="0,5,0,10" Height="16" Width="24" 
                                 behaviors:DTBehaviors.IsSelected="{Binding ActiveView, Converter={StaticResource StringMatchConverter}, ConverterParameter=Prompts}"
                                 Style="{StaticResource BorderlessToolbarButton}" Command="{Binding GotoUrl}" CommandParameter="prompts">
-                            <fa:ImageAwesome ToolTip="Prompts" Icon="FileTextOutline" Width="16" Foreground="{DynamicResource ForegroundBrush}" VerticalAlignment="Center" HorizontalAlignment="Center">
+                            <fa:ImageAwesome ToolTip="{lex:Loc Simpai.ToolTips.Prompts}" Icon="FileTextOutline" Width="16" Foreground="{DynamicResource ForegroundBrush}" VerticalAlignment="Center" HorizontalAlignment="Center">
                             </fa:ImageAwesome>
                         </Button>
                         <Button Margin="0,5,0,10" Height="16" Width="24" 
                                 behaviors:DTBehaviors.IsSelected="{Binding ActiveView, Converter={StaticResource StringMatchConverter}, ConverterParameter=Models}"
                                 Style="{StaticResource BorderlessToolbarButton}" Command="{Binding GotoUrl}" CommandParameter="models">
-                            <fa:ImageAwesome ToolTip="Models" Icon="PuzzlePiece" Width="16" Foreground="{DynamicResource ForegroundBrush}" VerticalAlignment="Center" HorizontalAlignment="Center">
+                            <fa:ImageAwesome ToolTip="{lex:Loc Simpai.ToolTips.Models}" Icon="PuzzlePiece" Width="16" Foreground="{DynamicResource ForegroundBrush}" VerticalAlignment="Center" HorizontalAlignment="Center">
                             </fa:ImageAwesome>
                         </Button>
                         <Grid>
                             <Button Margin="0,5,0,10" Height="16" Width="24" 
                                     behaviors:DTBehaviors.IsSelected="{Binding ActiveView, Converter={StaticResource StringMatchConverter}, ConverterParameter=Settings}"
                                     Style="{StaticResource BorderlessToolbarButton}" Command="{Binding GotoUrl}" CommandParameter="settings">
-                                <fa:ImageAwesome ToolTip="Settings" Icon="Gear" Width="16" Foreground="{DynamicResource ForegroundBrush}" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                <fa:ImageAwesome ToolTip="{lex:Loc Simpai.ToolTips.Settings}" Icon="Gear" Width="16" Foreground="{DynamicResource ForegroundBrush}" VerticalAlignment="Center" HorizontalAlignment="Center">
                                 </fa:ImageAwesome>
                             </Button>
                             <Ellipse Fill="Red" Width="8" Height="8" Margin="15,0,0,15" Visibility="{Binding IsSettingsDirty, Converter={StaticResource boolToVisCol}}"></Ellipse>
                         </Grid>
                         <Separator BorderThickness="1" BorderBrush="{DynamicResource SecondaryBrush}"></Separator>
                         <Button Margin="0,5,0,10" Height="16" Width="24" Style="{StaticResource BorderlessToolbarButton}" Command="{Binding Rescan}">
-                            <fa:ImageAwesome ToolTip="Scan folders for new images (Ctrl+R)" Icon="Refresh" Width="16" Foreground="{DynamicResource ForegroundBrush}" VerticalAlignment="Center" HorizontalAlignment="Center">
+                            <fa:ImageAwesome ToolTip="{lex:Loc Simpai.ToolTips.ScanFolders}" Icon="Refresh" Width="16" Foreground="{DynamicResource ForegroundBrush}" VerticalAlignment="Center" HorizontalAlignment="Center">
                             </fa:ImageAwesome>
                         </Button>
                     </StackPanel>

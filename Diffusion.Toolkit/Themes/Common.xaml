@@ -18,6 +18,8 @@
     <SolidColorBrush x:Key="DisabledForegroundBrush" Color="{DynamicResource DisabledForeground}"/>
     <SolidColorBrush x:Key="DisabledBackgroundBrush" Color="{DynamicResource DisabledBackground}"/>
     <SolidColorBrush x:Key="PreviewBackgroundBrush" Color="{DynamicResource PreviewBackground}"/>
+    <SolidColorBrush x:Key="WarningBrush" Color="{DynamicResource WarningBackground}"/>
+    <SolidColorBrush x:Key="WarningForegroundBrush" Color="{DynamicResource WarningForeground}"/>
 
 
 

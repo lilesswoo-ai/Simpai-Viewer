@@ -424,5 +424,15 @@
   "QueryBar.Help.ToolTip": "搜索帮助",
   "RootFolders.WatchForUpdates": "监视更新",
   "RootFolders.ScanRecursively": "递归扫描",
-  "RootFolders.Count": "{0:n0} 张图像"
+  "RootFolders.Count": "{0:n0} 张图像",
+  "Simpai.ToolTips.ShowHidePreview": "显示/隐藏预览",
+  "Simpai.ToolTips.PopOutPreview": "弹出预览",
+  "Simpai.ToolTips.Folders": "文件夹 (Ctrl+1)",
+  "Simpai.ToolTips.Search": "搜索 (Ctrl+2)",
+  "Simpai.ToolTips.Favorites": "收藏 (Ctrl+3)",
+  "Simpai.ToolTips.ForDeletion": "待删除 (Ctrl+4)",
+  "Simpai.ToolTips.Prompts": "提示词",
+  "Simpai.ToolTips.Models": "模型",
+  "Simpai.ToolTips.Settings": "设置",
+  "Simpai.ToolTips.ScanFolders": "扫描文件夹中的新图片 (Ctrl+R)"
 }
