@@ -64,7 +64,7 @@ AUTOMATIC1111 及兼容格式（Tensor.Art、SDNext）、InvokeAI、NovelAI、St
 
 ### 方式 A：自包含版（推荐，免运行时）
 
-1. 在 [Releases](https://github.com/lilesswoo-ai/SimpaiViewer.NET/releases) 下载
+1. 在 [Releases](https://github.com/lilesswoo-ai/Simpai-Viewer/releases) 下载
    `SimpaiViewer.NET-vX.X.X-win-x64-selfcontained.zip`；
 2. 解压到任意文件夹；
 3. 双击 `SimpaiViewer.exe` 即可运行，**无需安装任何 .NET 运行时**。
@@ -146,7 +146,7 @@ SimpAI Studio 导出的图片把生图参数写在 JPEG 的 **EXIF UserComment�
 ### 框架依赖版
 
 ```bash
-git clone https://github.com/lilesswoo-ai/SimpaiViewer.NET.git
+git clone https://github.com/lilesswoo-ai/Simpai-Viewer.git
 cd SimpaiViewer.NET
 ./publish.cmd        # 输出到 build/ 目录
 ```
