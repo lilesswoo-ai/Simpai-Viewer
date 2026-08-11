@@ -24,6 +24,17 @@
                 <TextBox Grid.Column="1" Text="{Binding Value, Mode=OneWay}" FontFamily="Consolas" FontSize="13" BorderThickness="0" Background="Transparent" IsReadOnly="True" Padding="5,3" TextWrapping="Wrap"/>
             </Grid>
         </DataTemplate>
+        <!--
+            Compact parameter template for the 3-column dense Parameters section.
+            Key (small label, secondary tone) on top, Value (Consolas, larger) below.
+            Designed to look readable in ~120-160px columns.
+        -->
+        <DataTemplate x:Key="CompactParameterTemplate">
+            <StackPanel Margin="4,3,4,4">
+                <TextBlock Text="{Binding Key, Mode=OneWay}" FontSize="11" FontWeight="SemiBold" Opacity="0.7" Foreground="{DynamicResource ForegroundBrush}" Margin="0,0,0,2"/>
+                <TextBox Text="{Binding Value, Mode=OneWay}" FontFamily="Consolas" FontSize="13" BorderThickness="0" Background="Transparent" IsReadOnly="True" TextWrapping="Wrap" Padding="0" Foreground="{DynamicResource ForegroundBrush}"/>
+            </StackPanel>
+        </DataTemplate>
     </UserControl.Resources>
     <Grid x:Name="Root" Background="Transparent"
         DataContext="{Binding CurrentImage, RelativeSource={RelativeSource AncestorLevel=1, Mode=FindAncestor, AncestorType=UserControl}}">
@@ -39,20 +50,12 @@
                 <ScrollViewer Background="Transparent" VerticalScrollBarVisibility="Auto">
                     <StackPanel Background="Transparent">
 
-                        <local:AccordionControl x:Name="ParametersMetadata" 
-                                                   HeaderBackground="#80000000" 
-                                                   Header="{lex:Loc Simpai.Metadata.Parameters}"
-                                                   Margin="0,0,0,5"
-                                                   State="{Binding MetadataSection.ParametersState, RelativeSource={RelativeSource AncestorLevel=1, Mode=FindAncestor, AncestorType=UserControl}, Mode=TwoWay}" 
-                                                   >
-                            <ItemsControl ItemsSource="{Binding ParameterItems}" ItemTemplate="{StaticResource MetadataItemTemplate}"/>
-                        </local:AccordionControl>
-
-                        <local:AccordionControl x:Name="PromptMetadata" 
-                                                   HeaderBackground="#80000000" 
+                        <!-- Prompt at the TOP (priority), font matches section header size -->
+                        <local:AccordionControl x:Name="PromptMetadata"
+                                                   HeaderBackground="#80000000"
                                                    Header="{lex:Loc Metadata.Prompt}"
                                                    Margin="0,0,0,5"
-                                                   State="{Binding MetadataSection.PromptState, RelativeSource={RelativeSource AncestorLevel=1, Mode=FindAncestor, AncestorType=UserControl}, Mode=TwoWay}" 
+                                                   State="{Binding MetadataSection.PromptState, RelativeSource={RelativeSource AncestorLevel=1, Mode=FindAncestor, AncestorType=UserControl}, Mode=TwoWay}"
                                                    >
                             <local:AccordionControl.ButtonAreaContent>
                                 <Grid Background="{x:Null}">
@@ -70,7 +73,8 @@
                                      Padding="5" TextWrapping="WrapWithOverflow" Text="{Binding Prompt}"/>
                         </local:AccordionControl>
 
-                        <local:AccordionControl x:Name="NegativePromptMetadata" 
+                        <!-- NegativePrompt -->
+                        <local:AccordionControl x:Name="NegativePromptMetadata"
                                                    Margin="0,0,0,5"
                                                    State="{Binding MetadataSection.NegativePromptState, RelativeSource={RelativeSource AncestorLevel=1, Mode=FindAncestor, AncestorType=UserControl}, Mode=TwoWay}"  HeaderBackground="#80000000" Header="{lex:Loc Metadata.NegativePrompt}">
                             <local:AccordionControl.ButtonAreaContent>
@@ -87,80 +91,63 @@
                                      Padding="5" TextWrapping="WrapWithOverflow" Text="{Binding NegativePrompt}"/>
                         </local:AccordionControl>
 
-                        <local:AccordionControl x:Name="ModelMetadata" 
+                        <!-- ModelName (highlighted header + larger body) + LoRA underneath -->
+                        <local:AccordionControl x:Name="ModelMetadata"
                                                 Margin="0,0,0,5"
-                                                State="{Binding MetadataSection.ModelState, RelativeSource={RelativeSource AncestorLevel=1, Mode=FindAncestor, AncestorType=UserControl}, Mode=TwoWay}"  HeaderBackground="#80000000" Header="{lex:Loc Metadata.ModelName}">
+                                                State="{Binding MetadataSection.ModelState, RelativeSource={RelativeSource AncestorLevel=1, Mode=FindAncestor, AncestorType=UserControl}, Mode=TwoWay}"
+                                                HeaderBackground="#FF4F8FCB"
+                                                Header="{lex:Loc Metadata.ModelName}">
                             <local:AccordionControl.ButtonAreaContent>
                                 <Grid Background="{x:Null}">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition/>
-                                        <ColumnDefinition Width="100"/>
                                         <ColumnDefinition Width="80"/>
                                     </Grid.ColumnDefinitions>
-                                    <Label Grid.Column="1" Style="{DynamicResource SmallCaps}" Content="{lex:Loc Metadata.ModelHash}"/>
-                                    <Button Style="{DynamicResource BorderlessButton}" Grid.Column="2" Command="{Binding SearchModelCommand}" Content="{lex:Loc Metadata.Buttons.SearchHash}"/>
+                                    <Button Style="{DynamicResource BorderlessButton}" Grid.Column="1" Command="{Binding SearchModelCommand}" Content="{lex:Loc Metadata.Buttons.SearchHash}"/>
                                 </Grid>
                             </local:AccordionControl.ButtonAreaContent>
-                            <Grid Background="{x:Null}">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition/>
-                                    <ColumnDefinition Width="100"/>
-                                    <ColumnDefinition Width="80"/>
-                                </Grid.ColumnDefinitions>
-                                <TextBox Grid.Column="0" FontSize="14" BorderThickness="0"
-                                         IsReadOnly="True" Padding="5" Background="Transparent" TextWrapping="WrapWithOverflow" Text="{Binding ModelName}"/>
-                                <TextBox Grid.Column="1" FontSize="14" BorderThickness="0" IsReadOnly="True" Padding="5" Background="Transparent" Text="{Binding ModelHash}"/>
-                            </Grid>
-                        </local:AccordionControl>
-
-                        <local:AccordionControl x:Name="SeedMetadata" 
-                                                   Margin="0,0,0,5"
-                                                   State="{Binding MetadataSection.SeedState, RelativeSource={RelativeSource AncestorLevel=1, Mode=FindAncestor, AncestorType=UserControl}, Mode=TwoWay}"   HeaderBackground="#80000000" Header="{lex:Loc Metadata.Seed}">
-                            <local:AccordionControl.ButtonAreaContent>
-                                <Grid Background="{x:Null}">
+                            <StackPanel>
+                                <TextBox FontSize="16" BorderThickness="0" FontWeight="SemiBold"
+                                         IsReadOnly="True" Padding="5" Background="Transparent" TextWrapping="WrapWithOverflow" Text="{Binding ModelName}" Foreground="{DynamicResource ForegroundBrush}"/>
+                                <!-- LoRA row (only shown if LoRAsSummary is non-null) -->
+                                <Grid Margin="0,4,0,0">
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition/>
-                                        <ColumnDefinition Width="50"/>
-                                        <ColumnDefinition Width="50"/>
-                                        <ColumnDefinition Width="95"/>
-                                        <ColumnDefinition Width="10"/>
+                                        <ColumnDefinition Width="60"/>
+                                        <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
-                                    <Label Grid.Column="1" Style="{DynamicResource SmallCaps}" Margin="0,0,0,0" Content="{lex:Loc Metadata.CFGScale}"/>
-                                    <Label Grid.Column="2" Style="{DynamicResource SmallCaps}" Margin="0,0,0,0" Content="{lex:Loc Metadata.Steps}"/>
-                                    <Label Grid.Column="3" Style="{DynamicResource SmallCaps}" Margin="0,0,0,0" Content="{lex:Loc Metadata.Size}"/>
+                                    <TextBlock Grid.Column="0" Text="LoRA" FontSize="12" FontWeight="SemiBold" Opacity="0.75" Padding="5,3" Foreground="{DynamicResource ForegroundBrush}"/>
+                                    <TextBox Grid.Column="1" Text="{Binding LoRAsSummary, Mode=OneWay, TargetNullValue=''}" FontFamily="Consolas" FontSize="13" BorderThickness="0" Background="Transparent" IsReadOnly="True" TextWrapping="Wrap" Padding="5,3" Foreground="{DynamicResource ForegroundBrush}"/>
                                 </Grid>
-                            </local:AccordionControl.ButtonAreaContent>
-                            <Grid Background="{x:Null}">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition/>
-                                    <ColumnDefinition Width="50"/>
-                                    <ColumnDefinition Width="50"/>
-                                    <ColumnDefinition Width="95"/>
-                                </Grid.ColumnDefinitions>
-                                <TextBox Background="#00000000" FontSize="14" BorderThickness="0"
-                                 IsReadOnly="True"
-                                 Padding="5" TextWrapping="WrapWithOverflow" Text="{Binding Seed, Converter={StaticResource ZeroConverter}}"/>
-                                <TextBox Grid.Column="1" Background="#00000000" FontSize="14" BorderThickness="0"
-                                 IsReadOnly="True"
-                                 Padding="5" TextWrapping="WrapWithOverflow" Text="{Binding CFGScale, Converter={StaticResource ZeroConverter}}"/>
-                                <TextBox Grid.Column="2" Background="#00000000" FontSize="14" BorderThickness="0"
-                                 IsReadOnly="True"
-                                 Padding="5" TextWrapping="WrapWithOverflow" Text="{Binding Steps, Converter={StaticResource ZeroConverter}}"/>
-                                <TextBox Grid.Column="3" Background="#00000000" FontSize="14" BorderThickness="0"
-                                 IsReadOnly="True"
-                                 Padding="5" TextWrapping="WrapWithOverflow" Text="{Binding ., Converter={StaticResource SizeConverter}}"/>
-                            </Grid>
+                                <!-- Model hash row -->
+                                <Grid Margin="0,2,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="60"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="Hash" FontSize="12" FontWeight="SemiBold" Opacity="0.75" Padding="5,3" Foreground="{DynamicResource ForegroundBrush}"/>
+                                    <TextBox Grid.Column="1" Text="{Binding ModelHash}" FontFamily="Consolas" FontSize="12" BorderThickness="0" Background="Transparent" IsReadOnly="True" TextWrapping="Wrap" Padding="5,3" Foreground="{DynamicResource ForegroundBrush}"/>
+                                </Grid>
+                            </StackPanel>
                         </local:AccordionControl>
 
-                        <local:AccordionControl x:Name="SamplerMetadata" 
+                        <!-- Parameters: 3-column dense layout using CompactParameterTemplate -->
+                        <local:AccordionControl x:Name="ParametersMetadata"
+                                                   HeaderBackground="#80000000"
+                                                   Header="{lex:Loc Simpai.Metadata.Parameters}"
                                                    Margin="0,0,0,5"
-                                                   State="{Binding MetadataSection.SamplerState, RelativeSource={RelativeSource AncestorLevel=1, Mode=FindAncestor, AncestorType=UserControl}, Mode=TwoWay}"  HeaderBackground="#80000000" Header="{lex:Loc Metadata.Sampler}">
-                            <TextBox Background="#00000000" FontSize="14" BorderThickness="0"
-                                     IsReadOnly="True"
-                                     Padding="5" TextWrapping="WrapWithOverflow" Text="{Binding Sampler}"/>
+                                                   State="{Binding MetadataSection.ParametersState, RelativeSource={RelativeSource AncestorLevel=1, Mode=FindAncestor, AncestorType=UserControl}, Mode=TwoWay}"
+                                                   >
+                            <ItemsControl ItemsSource="{Binding ParameterItems}" ItemTemplate="{StaticResource CompactParameterTemplate}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <UniformGrid Columns="3"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                            </ItemsControl>
                         </local:AccordionControl>
 
-                        <local:AccordionControl x:Name="OtherMetadata" 
+                        <!-- Others -->
+                        <local:AccordionControl x:Name="OtherMetadata"
                                                    Margin="0,0,0,5"
                                                    State="{Binding MetadataSection.OthersState, RelativeSource={RelativeSource AncestorLevel=1, Mode=FindAncestor, AncestorType=UserControl}, Mode=TwoWay}"  HeaderBackground="#80000000" Header="{lex:Loc Metadata.Others}">
                             <local:AccordionControl.ButtonAreaContent>
@@ -175,7 +162,8 @@
                             <ItemsControl ItemsSource="{Binding OtherParameterItems}" ItemTemplate="{StaticResource MetadataItemTemplate}"/>
                         </local:AccordionControl>
 
-                        <local:AccordionControl x:Name="PathMetadata" 
+                        <!-- Date / Album / Path remain at the bottom -->
+                        <local:AccordionControl x:Name="PathMetadata"
                                                    Margin="0,0,0,5"
                                                    State="{Binding MetadataSection.PathState, RelativeSource={RelativeSource AncestorLevel=1, Mode=FindAncestor, AncestorType=UserControl}, Mode=TwoWay}"  HeaderBackground="#80000000" Header="{lex:Loc Metadata.Path}">
                             <local:AccordionControl.ButtonAreaContent>
@@ -194,18 +182,18 @@
                                      Padding="5" TextWrapping="WrapWithOverflow" Text="{Binding Path}"/>
                         </local:AccordionControl>
 
-                        <local:AccordionControl x:Name="DateMetadata" 
+                        <local:AccordionControl x:Name="DateMetadata"
                                                    Margin="0,0,0,5"
-                                                   HeaderBackground="#80000000" 
+                                                   HeaderBackground="#80000000"
                                                    State="{Binding MetadataSection.DateState, RelativeSource={RelativeSource AncestorLevel=1, Mode=FindAncestor, AncestorType=UserControl}, Mode=TwoWay}"  Header="{lex:Loc Metadata.Date}">
                             <TextBox Background="#00000000" FontSize="14" BorderThickness="0"
                                      IsReadOnly="True"
                                      Padding="5" TextWrapping="WrapWithOverflow" Text="{Binding Date}"/>
                         </local:AccordionControl>
 
-                        <local:AccordionControl x:Name="AlbumMetadata" 
+                        <local:AccordionControl x:Name="AlbumMetadata"
                                                    Margin="0,0,0,5"
-                                                   HeaderBackground="#80000000" 
+                                                   HeaderBackground="#80000000"
                                                    State="{Binding MetadataSection.AlbumState, RelativeSource={RelativeSource AncestorLevel=1, Mode=FindAncestor, AncestorType=UserControl}, Mode=TwoWay}"  Header="{lex:Loc Metadata.Albums}">
                             <ItemsControl ItemsSource="{Binding Albums}">
                                 <ItemsControl.Resources>
@@ -218,12 +206,12 @@
                                                 >
                                             <StackPanel Orientation="Horizontal">
                                                 <TextBox FontSize="14" BorderThickness="0"
-                                                         IsReadOnly="True" Padding="5" Background="Transparent" 
+                                                         IsReadOnly="True" Padding="5" Background="Transparent"
                                                          TextWrapping="WrapWithOverflow" Text="{Binding Name}"
                                                          PreviewMouseDown="AlbumName_OnMouseDown" Cursor="Hand"/>
-                                                <Button Style="{StaticResource BorderlessButton}" 
-                                                        Command="{Binding Source={StaticResource Proxy}, Path=Data.RemoveFromAlbumCommand}" 
-                                                        CommandParameter="{Binding .}" 
+                                                <Button Style="{StaticResource BorderlessButton}"
+                                                        Command="{Binding Source={StaticResource Proxy}, Path=Data.RemoveFromAlbumCommand}"
+                                                        CommandParameter="{Binding .}"
                                                         Margin="0,5,5,5" Padding="0,5,5,5">X</Button>
                                             </StackPanel>
                                         </Border>

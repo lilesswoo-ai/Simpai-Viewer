@@ -42,3 +42,11 @@ build
 build-self-contained
 .vscode
 /Diffusion.Toolkit/Tools/*.json
+# Local scratch / interrupted-build dirs (not part of source)
+build-tmp*/
+qa-build*/
+qa-final-build/
+qa-sln-build/
+build-verify/
+MetaProbe/
+obj-alt*/

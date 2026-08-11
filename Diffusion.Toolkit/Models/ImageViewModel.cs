@@ -334,6 +334,31 @@ public class ImageViewModel : BaseNotify
         }
     }
 
+    /// <summary>
+    /// Looks up the "LoRAs" / "LoRA" / "Lora" entry in <see cref="OtherParameters"/>
+    /// and returns the raw value string (e.g. "MyLoRA: 0.8, StyleLoRA: 0.5") or
+    /// <c>null</c> if not present. Used by the preview pane to highlight LoRA usage.
+    /// </summary>
+    public string? LoRAsSummary
+    {
+        get
+        {
+            if (string.IsNullOrWhiteSpace(OtherParameters))
+            {
+                return null;
+            }
+            foreach (var item in OtherParameterItems)
+            {
+                if (string.Equals(item.Key, "LoRAs", StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(item.Key, "LoRA", StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(item.Key, "Lora", StringComparison.OrdinalIgnoreCase))
+                {
+                    return item.Value;
+                }
+            }
+            return null;
+        }
+    }
 
     public string Date
     {

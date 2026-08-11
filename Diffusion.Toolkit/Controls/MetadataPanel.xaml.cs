@@ -79,8 +79,6 @@ namespace Diffusion.Toolkit.Controls
             ParametersMetadata.State = state;
             PromptMetadata.State = state;
             NegativePromptMetadata.State = state;
-            SeedMetadata.State = state;
-            SamplerMetadata.State = state;
             OtherMetadata.State = state;
             ModelMetadata.State = state;
             PathMetadata.State = state;
