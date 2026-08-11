@@ -1,11 +1,14 @@
 # SimpaiViewer.NET
 
 > 一款面向 **AI 生图（Stable Diffusion / simpai / Fooocus 等）** 的本地图片元数据管理与看图工具。
-> 基于 [DiffusionToolkit](https://github.com/RupertAvery/DiffusionToolkit)（MIT，作者 Rupert Avery）派生，针对 **SimpAI Studio** 工作流做了本地化与体验增强。
+> 针对AI生图爱好者生成的海量（几千张以上）图片可以进行快速浏览、管理，对比digiKa、acdsee等软件SimpaiViewer体积更小运行更快，而且可以查看AI图片的生成提示词和参数，
+> 便于对比、复制提示词；对比一些轻量看图软件SimpaiViewer则多了图片管理功能（星标、收藏、添加到相册、标记NSFW等）；
+
+> 基于 [DiffusionToolkit](https://github.com/RupertAvery/DiffusionToolkit)（MIT，作者 Rupert Avery）派生，针对**SimpAI Studio**、 **Comfyui** 工作流做了本地化与体验增强。
 
 > SimpaiViewer.NET is a fork of [Diffusion Toolkit](https://github.com/RupertAvery/DiffusionToolkit) by Rupert Avery. Upstream credit and the MIT license are preserved.
 
----
+<img src="https://github.com/lilesswoo-ai/Simpai-Viewer/blob/main/ruanjianjiemian%2002.jpg" width="850" height="640" alt="软件界面">
 
 ## 一、这是什么
 
