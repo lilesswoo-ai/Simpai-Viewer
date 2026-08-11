@@ -20,11 +20,11 @@ SimpaiViewer.NET 帮你把越来越多、越来越乱的 AI 生图 **组织、�
 
 ---
 
-## 二、相对上游新增的能力（本 fork 重点）
+## 二、相对 DiffusionToolkit 新增的能力（本 fork 重点）
 
 | 能力 | 说明 |
 |------|------|
-| 品牌更名 | 程序名 `SimpaiViewer.NET`，标题栏/图标/更新器路径同步更新 |
+| 品牌更名 | 程序名 `SimpaiViewer.NET` |
 | 简体中文界面 | 完整中文本地化（zh-CN），界面默认中文 |
 | 深色主题 | 默认开启深色模式，深色下文字改为白字加粗，保证可读 |
 | 鼠标滚轮切图 | 在**预览面板**和**全屏**状态下，滚轮向上/向下切换上一张/下一张 |
@@ -36,7 +36,7 @@ SimpaiViewer.NET 帮你把越来越多、越来越乱的 AI 生图 **组织、�
 
 ---
 
-## 三、功能特性（沿用上游）
+## 三、功能特性（沿用 DiffusionToolkit）
 
 - 扫描图片与视频，存储并索引提示词及其他元数据（PNGInfo）
 - 轻松看图并查看元数据
@@ -59,7 +59,7 @@ SimpaiViewer.NET 帮你把越来越多、越来越乱的 AI 生图 **组织、�
 
 ### 支持的元数据格式
 
-AUTOMATIC1111 及兼容格式（Tensor.Art、SDNext）、InvokeAI、NovelAI、Stable Diffusion、EasyDiffusion、RuinedFooocus、Fooocus、FooocusMRE、Stable Swarm，以及 **simpai（SimpAI Studio）**。
+AUTOMATIC1111 及兼容格式（Tensor.Art、SDNext）、InvokeAI、NovelAI、Stable Diffusion、EasyDiffusion、RuinedFooocus、Fooocus、FooocusMRE、Stable Swarm，comfyui以及 **simpai（SimpAI Studio）**。
 
 ---
 
@@ -86,13 +86,14 @@ AUTOMATIC1111 及兼容格式（Tensor.Art、SDNext）、InvokeAI、NovelAI、St
 
 ## 五、快速上手
 
-1. 首次启动：在设置里确认**语言=简体中文**、**主题=深色**、**滚轮切图=开**（默认即如此）；
+1. 首次启动：设置默认是**语言=简体中文**、**主题=深色**、**滚轮切图=开**（如果需要修改语言和主题请进行设置）；
 2. 左侧「文件夹视图」添加你的生图输出目录（如 `I:\SimpAI\users\Local\outputs`）；
 3. 右键文件夹 → **扫描 / 重建元数据**，等待索引完成；
 4. 在缩略图区选中图片，右侧预览面板自动显示元数据；
 5. **按 `I`** 显示/隐藏元数据面板（预览面板聚焦时同样有效）；
 6. **鼠标滚轮**在预览/全屏时切换上一张/下一张；
 7. **双击预览图**进入全屏，**双击/Esc** 退出全屏。
+8. 按键盘删除键会标记图片为待删除（图片叠加垃圾桶图标），点软件左侧的垃圾桶图标，显示所有待删除图片，点“清空垃圾桶”则彻底删除。
 
 ---
 
