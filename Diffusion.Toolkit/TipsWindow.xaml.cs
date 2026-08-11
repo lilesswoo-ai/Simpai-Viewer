@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Input;
 using Diffusion.Toolkit.Classes;
 using Diffusion.Toolkit.Configuration;
@@ -46,9 +47,27 @@ namespace Diffusion.Toolkit
                 ? "Diffusion.Toolkit.Tips.zh-CN.md"
                 : "Diffusion.Toolkit.Tips.md";
 
+            string markdown;
+            try
+            {
+                markdown = ResourceHelper.GetString(tipsResource);
+            }
+            catch
+            {
+                // Fallback to English if localized resource is missing.
+                try
+                {
+                    markdown = ResourceHelper.GetString("Diffusion.Toolkit.Tips.md");
+                }
+                catch (Exception ex)
+                {
+                    markdown = $"无法加载帮助文档：{ex.Message}";
+                }
+            }
+
             var tips = new TipsModel
             {
-                Markdown = ResourceHelper.GetString(tipsResource),
+                Markdown = markdown,
                 Style = CustomStyles.BetterGithub,
                 Escape = new RelayCommand<object>(o => Close())
             };
@@ -63,7 +82,7 @@ namespace Diffusion.Toolkit
 
         private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
         {
-            System.Diagnostics.Process.Start("explorer", "https://github.com/RupertAvery/DiffusionToolkit/blob/master/Diffusion.Toolkit/Tips.md");
+            System.Diagnostics.Process.Start("explorer", "https://github.com/lilesswoo-ai/Simpai-Viewer#readme");
         }
     }
 }

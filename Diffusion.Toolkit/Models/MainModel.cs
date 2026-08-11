@@ -429,12 +429,6 @@ public class MainModel : BaseNotify
         set => SetField(ref field, value);
     }
 
-    public ICommand DownloadCivitai
-    {
-        get;
-        set => SetField(ref field, value);
-    }
-
     public ObservableCollection<AlbumModel> Albums
     {
         get;

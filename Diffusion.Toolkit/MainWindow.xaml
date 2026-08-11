@@ -421,7 +421,6 @@
             <MenuItem Header="{lex:Loc Menu.Tools}">
                 <MenuItem Header="{lex:Loc Menu.Tools.RebuildMetadata}" Command="{Binding Rebuild}"/>
                 <MenuItem Header="{lex:Loc Menu.Tools.ReloadModels}" Command="{Binding ReloadHashes}"/>
-                <MenuItem Header="{lex:Loc Menu.Tools.DownloadCivitaiModels}" Command="{Binding DownloadCivitai}"/>
                 <Separator></Separator>
                 <MenuItem Header="{lex:Loc Menu.Tools.Folders}">
                     <MenuItem Header="{lex:Loc Menu.Tools.Folders.FixMissingImages}" Command="{Binding FixFoldersCommand}"/>
