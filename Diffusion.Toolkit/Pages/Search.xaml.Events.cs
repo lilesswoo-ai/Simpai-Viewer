@@ -161,7 +161,14 @@ namespace Diffusion.Toolkit.Pages
 
         public void OpenSearchHelp()
         {
-            _model.SearchHelpMarkdown = ResourceHelper.GetString("Diffusion.Toolkit.SearchHelp.md");
+            // Load localized search help: Chinese for zh-CN (or other non-English)
+            // cultures, English otherwise.
+            var culture = Diffusion.Toolkit.Configuration.Settings.Instance?.Culture ?? "zh-CN";
+            var helpResource = culture.StartsWith("zh", System.StringComparison.OrdinalIgnoreCase)
+                ? "Diffusion.Toolkit.SearchHelp.zh-CN.md"
+                : "Diffusion.Toolkit.SearchHelp.md";
+
+            _model.SearchHelpMarkdown = ResourceHelper.GetString(helpResource);
             _model.SearchHelpStyle = CustomStyles.BetterGithub;
             _model.IsSearchHelpVisible = true;
         }

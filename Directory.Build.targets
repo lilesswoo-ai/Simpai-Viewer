@@ -1,0 +1,22 @@
+<Project>
+
+  <!--
+    SimpaiViewer solution-wide build hygiene.
+
+    Interrupted builds that passed a custom -p:BaseIntermediateOutputPath
+    (e.g. obj-alt, qa-obj-toolkit) can leave stray generated .cs files inside
+    project folders. The default "**/*.cs" compile glob would pick those up and
+    produce duplicate-assembly-attribute errors (CS0579). Excluding them from
+    compilation keeps the build clean without requiring manual cleanup.
+  -->
+
+  <ItemGroup>
+    <Compile Remove="$(MSBuildProjectDirectory)\qa-obj-toolkit\**\*.cs" />
+    <Compile Remove="$(MSBuildProjectDirectory)\obj-alt\**\*.cs" />
+    <Compile Remove="$(MSBuildProjectDirectory)\obj-alt2\**\*.cs" />
+    <Compile Remove="$(MSBuildProjectDirectory)\obj-alt3\**\*.cs" />
+    <Compile Remove="$(MSBuildProjectDirectory)\obj-alt4\**\*.cs" />
+    <Compile Remove="$(MSBuildProjectDirectory)\obj-alt5\**\*.cs" />
+  </ItemGroup>
+
+</Project>

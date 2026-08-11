@@ -465,7 +465,7 @@ namespace Diffusion.Toolkit
 
             Logger.Log($"An unhandled exception occured: {exception.Message}\r\n\r\n{exception.StackTrace}");
 
-            MessageBox.Show(this, exception.Message, "An unhandled exception occured", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+            MessageBox.Show(this, exception.Message, GetLocalizedText("Simpai.Messages.UnhandledException"), MessageBoxButton.OK, MessageBoxImage.Exclamation);
 
         }
 
@@ -524,6 +524,40 @@ namespace Diffusion.Toolkit
             var isFirstTime = false;
             IReadOnlyList<string> newFolders = null;
 
+            // One-time migration: SimpaiViewer uses its own config path so a legacy
+            // DiffusionToolkit config cannot override the new defaults. If no
+            // SimpaiViewer config exists yet but a legacy one does, copy it over
+            // (preserving folders/model paths/etc.) and force the three settings
+            // that must default to the SimpaiViewer experience: zh-CN, Dark, scroll.
+            if (!File.Exists(AppInfo.SettingsPath))
+            {
+                var legacySettingsPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "DiffusionToolkit", "config.json");
+                if (File.Exists(legacySettingsPath))
+                {
+                    try
+                    {
+                        var settingsDir = Path.GetDirectoryName(AppInfo.SettingsPath);
+                        if (!string.IsNullOrEmpty(settingsDir))
+                        {
+                            Directory.CreateDirectory(settingsDir);
+                            File.Copy(legacySettingsPath, AppInfo.SettingsPath, true);
+
+                            if (_configuration.TryLoad(out var migrated))
+                            {
+                                migrated.Theme = "Dark";
+                                migrated.Culture = "zh-CN";
+                                migrated.ScrollNavigation = true;
+                                _configuration.Save(migrated);
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Log($"Error migrating legacy config: {ex.Message}");
+                    }
+                }
+            }
+
             if (!_configuration.Exists())
             {
                 Logger.Log($"Opening Settings for first time");
@@ -569,7 +603,7 @@ namespace Diffusion.Toolkit
                 }
                 catch (Exception exception)
                 {
-                    MessageBox.Show(this, "An error occured while loading configuration settings. The application will exit", "Startup failed!", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show(this, GetLocalizedText("Simpai.Messages.StartupFailed"), GetLocalizedText("Simpai.Messages.StartupFailedTitle"), MessageBoxButton.OK, MessageBoxImage.Error);
                     throw;
                 }
 
@@ -993,7 +1027,7 @@ namespace Diffusion.Toolkit
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(this, ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show(this, ex.Message, GetLocalizedText("Simpai.Messages.Error"), MessageBoxButton.OK, MessageBoxImage.Error);
                 }
 
             }
@@ -1008,14 +1042,14 @@ namespace Diffusion.Toolkit
 
                 if (string.IsNullOrEmpty(_settings.CustomCommandLine))
                 {
-                    MessageBox.Show(this, "No custom viewer set. Please check Settings", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show(this, GetLocalizedText("Simpai.Messages.NoCustomViewer"), GetLocalizedText("Simpai.Messages.Error"), MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
 
 
                 if (!File.Exists(_settings.CustomCommandLine))
                 {
-                    MessageBox.Show(this, "The specified application does not exist", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show(this, GetLocalizedText("Simpai.Messages.AppNotExist"), GetLocalizedText("Simpai.Messages.Error"), MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
 
@@ -1032,7 +1066,7 @@ namespace Diffusion.Toolkit
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(this, ex.Message + "\r\n\r\nPlease check that the path to your custom viewer is valid and that the arguments are correct", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show(this, ex.Message + "\r\n\r\n" + GetLocalizedText("Simpai.Messages.CheckCustomViewer"), GetLocalizedText("Simpai.Messages.Error"), MessageBoxButton.OK, MessageBoxImage.Error);
                 }
 
             }
@@ -1116,7 +1150,7 @@ namespace Diffusion.Toolkit
                 }
                 catch (Exception e)
                 {
-                    MessageBox.Show($"Error loading JSON file '{_settings.HashCache}':\n{e.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show(GetLocalizedText("Simpai.Messages.ErrorLoadingJSON").Replace("{path}", _settings.HashCache).Replace("{message}", e.Message), GetLocalizedText("Simpai.Messages.Error"), MessageBoxButton.OK, MessageBoxImage.Information);
                 }
 
                 //foreach (var model in _modelsCollection.ToList())

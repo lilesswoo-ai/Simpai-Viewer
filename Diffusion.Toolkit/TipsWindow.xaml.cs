@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Input;
 using Diffusion.Toolkit.Classes;
+using Diffusion.Toolkit.Configuration;
 using Diffusion.Toolkit.MdStyles;
 using Diffusion.Toolkit.Models;
 
@@ -37,9 +38,17 @@ namespace Diffusion.Toolkit
         public TipsWindow()
         {
             InitializeComponent();
+
+            // Load the localized "Getting Started" content: Chinese for zh-CN
+            // (or other non-English) cultures, English otherwise.
+            var culture = Settings.Instance?.Culture ?? "zh-CN";
+            var tipsResource = culture.StartsWith("zh", System.StringComparison.OrdinalIgnoreCase)
+                ? "Diffusion.Toolkit.Tips.zh-CN.md"
+                : "Diffusion.Toolkit.Tips.md";
+
             var tips = new TipsModel
             {
-                Markdown = ResourceHelper.GetString("Diffusion.Toolkit.Tips.md"),
+                Markdown = ResourceHelper.GetString(tipsResource),
                 Style = CustomStyles.BetterGithub,
                 Escape = new RelayCommand<object>(o => Close())
             };

@@ -5,6 +5,10 @@
                         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                         xmlns:local="clr-namespace:Diffusion.Toolkit"
+                        xmlns:lex="http://wpflocalizeextension.codeplex.com"
+                        lex:LocalizeDictionary.Provider="{StaticResource LocalizationProvider}"
+                        lex:LocalizeDictionary.Separation="."
+                        lex:LocalizeDictionary.DefaultProvider="{StaticResource LocalizationProvider}"
                         mc:Ignorable="d"
                         d:DataContext="{d:DesignInstance local:SearchResultsModel, IsDesignTimeCreatable = True}"
                         WindowStartupLocation="CenterOwner"
@@ -14,7 +18,7 @@
                         WindowStyle="ToolWindow"
                         Style="{StaticResource BorderlessWindowStyle}"
                         ResizeMode="NoResize"
-                        Title="Search Results" Height="450" Width="800">
+                        Title="{lex:Loc Simpai.SearchResults.Title}" Height="450" Width="800">
     <Window.InputBindings>
         <KeyBinding Key="Escape" Command="{Binding Escape}"></KeyBinding>
     </Window.InputBindings>

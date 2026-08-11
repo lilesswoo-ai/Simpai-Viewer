@@ -36,7 +36,7 @@
                             <TextBox x:Name="PromptTextBox" 
             Text="{Binding Prompt}" KeyDown="UIElement_OnKeyDown" Grid.Column="1" 
              Height="60"
-             ToolTip="Separate terms with commas"
+             ToolTip="{lex:Loc Simpai.Filter.SeparateTerms}"
              HorizontalScrollBarVisibility="Disabled"
              VerticalScrollBarVisibility="Auto"
              TextWrapping="Wrap"
@@ -52,7 +52,7 @@
                             <TextBox x:Name="PromptExTextBox" 
              Text="{Binding PromptEx}" KeyDown="UIElement_OnKeyDown" Grid.Column="1" 
              Height="60"
-             ToolTip="Separate terms with commas"
+             ToolTip="{lex:Loc Simpai.Filter.SeparateTerms}"
              HorizontalScrollBarVisibility="Disabled"
              VerticalScrollBarVisibility="Auto"
              TextWrapping="Wrap"
@@ -67,7 +67,7 @@
                             <CheckBox IsChecked="{Binding UseNegativePrompt}" VerticalContentAlignment="Center" Content="{lex:Loc Filter.Metadata.NegativePrompt}"></CheckBox>
                             <TextBox Text="{Binding NegativePrompt}" KeyDown="UIElement_OnKeyDown" Grid.Column="1" 
              Height="60"
-             ToolTip="Separate terms with commas"
+             ToolTip="{lex:Loc Simpai.Filter.SeparateTerms}"
              HorizontalScrollBarVisibility="Disabled"
              VerticalScrollBarVisibility="Auto"
              TextWrapping="Wrap"
@@ -82,7 +82,7 @@
                             <CheckBox IsChecked="{Binding UseNegativePromptEx}" VerticalContentAlignment="Center" Content="{lex:Loc Filter.Metadata.ExcludeNegative}"></CheckBox>
                             <TextBox Text="{Binding NegativePromptEx}" KeyDown="UIElement_OnKeyDown" Grid.Column="1" 
              Height="60"
-             ToolTip="Separate terms with commas"
+             ToolTip="{lex:Loc Simpai.Filter.SeparateTerms}"
              HorizontalScrollBarVisibility="Disabled"
              VerticalScrollBarVisibility="Auto"
              TextWrapping="Wrap"
@@ -96,7 +96,7 @@
                             </Grid.ColumnDefinitions>
                             <CheckBox IsChecked="{Binding UseSteps}" VerticalContentAlignment="Center" Content="{lex:Loc Filter.Metadata.Steps}"></CheckBox>
                             <TextBox behaviors:DTBehaviors.SelectOnFocus="True"  VerticalContentAlignment="Center" Text="{Binding Steps}" KeyDown="UIElement_OnKeyDown" Grid.Column="1" Height="20"
-                                     ToolTip="Separate multiple values with commas"
+                                     ToolTip="{lex:Loc Simpai.Filter.SeparateValues}"
                             ></TextBox>
                         </Grid>
                         <Grid Margin="0,0,0,5">
@@ -106,7 +106,7 @@
                             </Grid.ColumnDefinitions>
                             <CheckBox IsChecked="{Binding UseSampler}" VerticalContentAlignment="Center" Content="{lex:Loc Filter.Metadata.Sampler}"></CheckBox>
                             <TextBox behaviors:DTBehaviors.SelectOnFocus="True"  VerticalContentAlignment="Center" Text="{Binding Sampler}" KeyDown="UIElement_OnKeyDown" Grid.Column="1" Height="20"
-                                     ToolTip="Separate multiple values with commas"
+                                     ToolTip="{lex:Loc Simpai.Filter.SeparateValues}"
                             ></TextBox>
                         </Grid>
                         <Grid Margin="0,0,0,5">
@@ -116,7 +116,7 @@
                             </Grid.ColumnDefinitions>
                             <CheckBox IsChecked="{Binding UseCFGScale}" VerticalContentAlignment="Center" Content="{lex:Loc Filter.Metadata.CFGScale}"></CheckBox>
                             <TextBox behaviors:DTBehaviors.SelectOnFocus="True"  VerticalContentAlignment="Center" Text="{Binding CFGScale}" KeyDown="UIElement_OnKeyDown" Grid.Column="1" Height="20"
-                                     ToolTip="Separate multiple values with commas"
+                                     ToolTip="{lex:Loc Simpai.Filter.SeparateValues}"
                             ></TextBox>
                         </Grid>
                         <Grid Margin="0,0,0,5">

@@ -33,7 +33,7 @@
                            Text="{Binding SearchHint}" FontStyle="Italic" 
                            VerticalAlignment="Center" 
                            HorizontalAlignment="Left" 
-                           Padding="8,0,0,0" Foreground="DarkGray">
+                           Padding="8,0,0,0" Foreground="{DynamicResource ForegroundBrush}" Opacity="0.6">
                 <TextBlock.Style>
                     <Style TargetType="{x:Type TextBlock}">
                         <Setter Property="Visibility" Value="Collapsed"/>

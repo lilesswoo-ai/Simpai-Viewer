@@ -24,6 +24,13 @@ Thumbs.db
 *.lib
 *.sbr
 obj/
+# Stray intermediate-output directories from interrupted builds with custom -p:BaseIntermediateOutputPath
+qa-obj-toolkit/
+obj-alt/
+obj-alt2/
+obj-alt3/
+obj-alt4/
+obj-alt5/
 [Rr]elease*/
 ![Rr]elease Notes*/
 _ReSharper*/

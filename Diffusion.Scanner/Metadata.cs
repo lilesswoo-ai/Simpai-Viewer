@@ -44,6 +44,7 @@ public class Metadata
         FooocusMRE,
         Fooocus,
         SwarmUI,
+        SimpAI,
         Unknown,
     }
 
@@ -293,7 +294,12 @@ public class Metadata
                                                     var isJson = tag.Description.Substring("parameters: ".Length).Trim().StartsWith("{");
                                                     if (isJson)
                                                     {
-                                                        if (tag.Description.Contains("sui_image_params"))
+                                                        if (TryReadSimpAIParameters(tag.Description, out var simpaiParameters))
+                                                        {
+                                                            fileParameters = simpaiParameters;
+                                                            format = MetaFormat.SimpAI;
+                                                        }
+                                                        else if (tag.Description.Contains("sui_image_params"))
                                                         {
                                                             fileParameters = ReadStableSwarmParameters(tag.Description);
                                                             format = MetaFormat.SwarmUI;
@@ -397,8 +403,16 @@ public class Metadata
                                     {
                                         if (tag.Name == "Textual Data" && tag.Description.StartsWith("parameters:"))
                                         {
-                                            format = MetaFormat.A1111;
-                                            fileParameters = ReadA111Parameters(tag.Description);
+                                            if (TryReadSimpAIParameters(tag.Description, out var simpaiParameters))
+                                            {
+                                                format = MetaFormat.SimpAI;
+                                                fileParameters = simpaiParameters;
+                                            }
+                                            else
+                                            {
+                                                format = MetaFormat.A1111;
+                                                fileParameters = ReadA111Parameters(tag.Description);
+                                            }
                                         }
                                     }
 
@@ -410,8 +424,16 @@ public class Metadata
                                     {
                                         if (tag.Name == "User Comment")
                                         {
-                                            format = MetaFormat.A1111;
-                                            fileParameters = ReadA111Parameters(tag.Description);
+                                            if (TryReadSimpAIParameters(tag.Description, out var simpaiParameters))
+                                            {
+                                                format = MetaFormat.SimpAI;
+                                                fileParameters = simpaiParameters;
+                                            }
+                                            else
+                                            {
+                                                format = MetaFormat.A1111;
+                                                fileParameters = ReadA111Parameters(tag.Description);
+                                            }
                                         }
                                     }
 
@@ -475,7 +497,12 @@ public class Metadata
                                     {
                                         case "User Comment":
                                             var description = tag.Description;
-                                            if (description.Contains("sui_image_params"))
+                                            if (TryReadSimpAIParameters(description, out var simpaiParameters))
+                                            {
+                                                format = MetaFormat.SimpAI;
+                                                fileParameters = simpaiParameters;
+                                            }
+                                            else if (description.Contains("sui_image_params"))
                                             {
                                                 fileParameters = ReadStableSwarmParameters(description);
                                             }
@@ -539,6 +566,19 @@ public class Metadata
                                 }
 
 
+                            }
+                        }
+
+                        if (fileParameters == null)
+                        {
+                            // Fall back to reading the raw EXIF UserComment bytes directly
+                            // (layout: "UNICODE\0" 8-byte header + UTF-16BE encoded JSON).
+                            stream.Seek(0, SeekOrigin.Begin);
+                            var simpaiJson = ReadSimpAIUserComment(stream);
+                            if (simpaiJson != null)
+                            {
+                                format = MetaFormat.SimpAI;
+                                fileParameters = ReadSimpAIParameters(simpaiJson);
                             }
                         }
 
@@ -1417,6 +1457,482 @@ public class Metadata
         fp.OtherParameters = $"Steps: {fp.Steps} Sampler: {fp.Sampler} CFG Scale: {fp.CFGScale} Seed: {fp.Seed} Size: {fp.Width}x{fp.Height}";
 
         return fp;
+    }
+
+    /// <summary>
+    /// Detects whether a metadata JSON blob uses the SimpAI metadata scheme
+    /// (based on Fooocus, but extended with a "Metadata Scheme" marker and a
+    /// "Version" string containing "SimpAI").
+    /// </summary>
+    private static bool IsSimpAIMetadata(JsonDocument json)
+    {
+        try
+        {
+            var root = json.RootElement;
+
+            if (root.ValueKind != JsonValueKind.Object)
+            {
+                return false;
+            }
+
+            if (root.TryGetProperty("Metadata Scheme", out var scheme) && scheme.ValueKind == JsonValueKind.String)
+            {
+                if (scheme.GetString() == "simple")
+                {
+                    return true;
+                }
+            }
+
+            if (root.TryGetProperty("Version", out var version) && version.ValueKind == JsonValueKind.String)
+            {
+                var versionText = version.GetString();
+                if (!string.IsNullOrEmpty(versionText) && versionText.Contains("SimpAI", StringComparison.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Reads a SimpAI metadata JSON blob into <see cref="FileParameters"/>.
+    /// </summary>
+    /// <remarks>
+    /// SimpAI stores a Fooocus-derived JSON document (UTF-16BE encoded) in the
+    /// EXIF UserComment segment of JPEG/PNG files. All fields are surfaced on
+    /// the FileParameters instance; fields without a dedicated property are
+    /// emitted as "Key: Value" lines in <see cref="FileParameters.OtherParameters"/>
+    /// so the existing OtherParameterItems parser can expand them.
+    /// </remarks>
+    private static FileParameters ReadSimpAIParameters(string json)
+    {
+        var fp = new FileParameters();
+
+        fp.WorkflowId = json.GetHashCode().ToString("X");
+        fp.Workflow = json;
+
+        using var doc = JsonDocument.Parse(json);
+        var root = doc.RootElement;
+
+        // Prompt / Negative Prompt (simpai stores the raw Chinese prompt in "Prompt").
+        fp.Prompt = GetJsonPropertyString(root, "Prompt");
+
+        if (string.IsNullOrEmpty(fp.Prompt) && root.TryGetProperty("Full Prompt", out var fullPrompt) && fullPrompt.ValueKind == JsonValueKind.Array)
+        {
+            fp.Prompt = string.Join("\r\n", fullPrompt.EnumerateArray()
+                .Where(e => e.ValueKind == JsonValueKind.String)
+                .Select(e => e.GetString()));
+        }
+
+        fp.NegativePrompt = GetJsonPropertyString(root, "Negative Prompt");
+
+        if (string.IsNullOrEmpty(fp.NegativePrompt) && root.TryGetProperty("Full Negative Prompt", out var fullNegativePrompt) && fullNegativePrompt.ValueKind == JsonValueKind.Array)
+        {
+            fp.NegativePrompt = string.Join("\r\n", fullNegativePrompt.EnumerateArray()
+                .Where(e => e.ValueKind == JsonValueKind.String)
+                .Select(e => e.GetString()));
+        }
+
+        if (root.TryGetProperty("Steps", out var steps) && steps.ValueKind == JsonValueKind.Number)
+        {
+            fp.Steps = steps.GetInt32();
+        }
+
+        fp.Sampler = GetJsonPropertyString(root, "Sampler");
+
+        // Seed can be a JSON number or a string (e.g. "752693983253075").
+        if (root.TryGetProperty("Seed", out var seedElement))
+        {
+            if (seedElement.ValueKind == JsonValueKind.Number)
+            {
+                fp.Seed = seedElement.GetInt64();
+            }
+            else if (seedElement.ValueKind == JsonValueKind.String && long.TryParse(seedElement.GetString(), NumberStyles.Integer, CultureInfo.InvariantCulture, out var seedValue))
+            {
+                fp.Seed = seedValue;
+            }
+        }
+
+        if (root.TryGetProperty("Guidance Scale", out var guidanceScale) && guidanceScale.ValueKind == JsonValueKind.Number)
+        {
+            fp.CFGScale = guidanceScale.GetDecimal();
+        }
+
+        fp.Model = GetJsonPropertyString(root, "Base Model");
+        fp.ModelHash = GetJsonPropertyString(root, "Base Model Hash");
+
+        // Resolution is stored as "(832, 1216)".
+        var resolution = GetJsonPropertyString(root, "Resolution");
+        if (!string.IsNullOrEmpty(resolution))
+        {
+            var trimmed = resolution.Trim('(', ')');
+            var parts = trimmed.Split(new[] { ',' }, StringSplitOptions.TrimEntries);
+            if (parts.Length == 2)
+            {
+                if (int.TryParse(parts[0], NumberStyles.Integer, CultureInfo.InvariantCulture, out var width))
+                {
+                    fp.Width = width;
+                }
+
+                if (int.TryParse(parts[1], NumberStyles.Integer, CultureInfo.InvariantCulture, out var height))
+                {
+                    fp.Height = height;
+                }
+            }
+        }
+
+        // Surface every remaining field as a "Key: Value" line so the existing
+        // OtherParameterItems parser expands them into individual rows.
+        var otherParameters = new List<string>();
+        var knownKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {
+            "Prompt",
+            "Full Prompt",
+            "Negative Prompt",
+            "Full Negative Prompt",
+            "Steps",
+            "Sampler",
+            "Seed",
+            "Guidance Scale",
+            "Base Model",
+            "Base Model Hash",
+            "Resolution",
+            "Metadata Scheme",
+            // The Regen manifest is a huge nested JSON blob; it would drown the
+            // "Other Parameters" panel. It remains available via the raw
+            // metadata (Workflow) tab instead.
+            "SimpleAI Regen Manifest",
+        };
+
+        foreach (var property in root.EnumerateObject())
+        {
+            if (knownKeys.Contains(property.Name))
+            {
+                continue;
+            }
+
+            var value = FormatSimpAIOtherValue(property.Value);
+            if (string.IsNullOrEmpty(value))
+            {
+                continue;
+            }
+
+            otherParameters.Add($"{property.Name}: {value}");
+        }
+
+        fp.OtherParameters = string.Join("\n", otherParameters);
+
+        return fp;
+    }
+
+    private static string? GetJsonPropertyString(JsonElement root, string propertyName)
+    {
+        if (root.TryGetProperty(propertyName, out var element) && element.ValueKind == JsonValueKind.String)
+        {
+            return element.GetString();
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// Formats a JSON value for the "Other Parameters" key/value display.
+    /// Strings are emitted verbatim, arrays are joined with ", " and objects
+    /// (e.g. the large Regen manifest) are skipped to keep the panel readable.
+    /// Strings that carry a Python-style list (e.g. "['Artstyle Abstract', 'Watercolor 2']")
+    /// are normalized to a comma-separated list.
+    /// </summary>
+    private static string? FormatSimpAIOtherValue(JsonElement element)
+    {
+        switch (element.ValueKind)
+        {
+            case JsonValueKind.String:
+                var text = element.GetString();
+                if (string.IsNullOrEmpty(text))
+                {
+                    return null;
+                }
+
+                // Normalize Python-repr lists produced by SimpAI.
+                if (text.StartsWith("[") && text.EndsWith("]"))
+                {
+                    var listItems = text.Substring(1, text.Length - 2)
+                        .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                        .Select(s => s.Trim().Trim('\'', '"'))
+                        .Where(s => s.Length > 0);
+                    return string.Join(", ", listItems);
+                }
+
+                return text;
+            case JsonValueKind.Number:
+                return element.GetRawText();
+            case JsonValueKind.True:
+                return "true";
+            case JsonValueKind.False:
+                return "false";
+            case JsonValueKind.Array:
+                var arrayItems = element.EnumerateArray()
+                    .Select(e => e.ValueKind == JsonValueKind.String ? e.GetString() : e.GetRawText())
+                    .Where(s => !string.IsNullOrEmpty(s));
+                return string.Join(", ", arrayItems);
+            case JsonValueKind.Object:
+                // Skip large nested objects (e.g. SimpleAI Regen Manifest).
+                return null;
+            default:
+                return null;
+        }
+    }
+
+    /// <summary>
+    /// Attempts to decode and parse a SimpAI metadata JSON blob from an EXIF
+    /// UserComment tag description (which MetadataExtractor already decodes to
+    /// a UTF-16BE string, so the 8-byte "UNICODE\0" header is already stripped).
+    /// A leading "parameters:" prefix (PNG tEXt/iTXt) is tolerated.
+    /// </summary>
+    private static bool TryReadSimpAIParameters(string description, out FileParameters? fileParameters)
+    {
+        fileParameters = null;
+
+        if (string.IsNullOrWhiteSpace(description))
+        {
+            return false;
+        }
+
+        var trimmed = description.Trim();
+        if (trimmed.StartsWith("parameters:", StringComparison.OrdinalIgnoreCase))
+        {
+            trimmed = trimmed.Substring("parameters:".Length).TrimStart();
+        }
+
+        if (!trimmed.StartsWith("{"))
+        {
+            return false;
+        }
+
+        try
+        {
+            using var json = JsonDocument.Parse(trimmed);
+
+            if (IsSimpAIMetadata(json))
+            {
+                fileParameters = ReadSimpAIParameters(trimmed);
+                return true;
+            }
+
+            return false;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Reads the raw EXIF UserComment (0x9286) payload from a JPEG stream using
+    /// the documented layout: IFD0 (0x8769 ExifOffset) → ExifIFD → 0x9286,
+    /// followed by an 8-byte "UNICODE\0" header and a UTF-16BE encoded JSON
+    /// string. Returns the decoded JSON string, or null if not present.
+    /// </summary>
+    private static string? ReadSimpAIUserComment(Stream stream)
+    {
+        try
+        {
+            using var memory = new MemoryStream();
+            stream.Seek(0, SeekOrigin.Begin);
+            stream.CopyTo(memory);
+            var data = memory.ToArray();
+
+            // Walk JPEG segments looking for the APP1 Exif segment.
+            var offset = 2; // skip SOI
+            while (offset + 4 <= data.Length)
+            {
+                if (data[offset] != 0xFF)
+                {
+                    break;
+                }
+
+                var marker = data[offset + 1];
+
+                // Standalone markers have no length field.
+                if (marker == 0xD8 || marker == 0x01 || (marker >= 0xD0 && marker <= 0xD7))
+                {
+                    offset += 2;
+                    continue;
+                }
+
+                if (marker == 0xDA) // Start of scan - no more metadata
+                {
+                    break;
+                }
+
+                var length = (data[offset + 2] << 8) | data[offset + 3];
+                var payloadStart = offset + 4;
+                var payloadEnd = offset + 2 + length;
+
+                if (marker == 0xE1 && payloadEnd - payloadStart >= 6
+                    && data[payloadStart] == (byte)'E' && data[payloadStart + 1] == (byte)'x'
+                    && data[payloadStart + 2] == (byte)'i' && data[payloadStart + 3] == (byte)'f'
+                    && data[payloadStart + 4] == 0 && data[payloadStart + 5] == 0)
+                {
+                    var userComment = ReadExifUserComment(data, payloadStart + 6);
+                    if (userComment != null)
+                    {
+                        return userComment;
+                    }
+                }
+
+                offset = payloadEnd;
+            }
+
+            return null;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Parses a TIFF block (starting after the "Exif\0\0" marker) and returns
+    /// the decoded UserComment string from the ExifIFD (0x9286), or null.
+    /// </summary>
+    private static string? ReadExifUserComment(byte[] data, int tiffStart)
+    {
+        try
+        {
+            if (tiffStart + 8 > data.Length)
+            {
+                return null;
+            }
+
+            var littleEndian = data[tiffStart] == (byte)'I' && data[tiffStart + 1] == (byte)'I';
+            var bigEndian = data[tiffStart] == (byte)'M' && data[tiffStart + 1] == (byte)'M';
+            if (!littleEndian && !bigEndian)
+            {
+                return null;
+            }
+
+            // Magic 42
+            var magic = ReadUInt16(data, tiffStart + 2, littleEndian);
+            if (magic != 42)
+            {
+                return null;
+            }
+
+            var ifd0Offset = ReadUInt32(data, tiffStart + 4, littleEndian);
+            if (ifd0Offset == 0 || tiffStart + ifd0Offset + 2 > data.Length)
+            {
+                return null;
+            }
+
+            var exifEntry = FindTagEntry(data, tiffStart, ifd0Offset, 0x8769, littleEndian);
+            if (exifEntry == 0)
+            {
+                return null;
+            }
+
+            // ExifOffset (0x8769) is a LONG; its value field holds the offset directly.
+            var exifOffset = ReadUInt32(data, exifEntry + 8, littleEndian);
+            if (exifOffset == 0 || tiffStart + exifOffset + 2 > data.Length)
+            {
+                return null;
+            }
+
+            var userCommentEntry = FindTagEntry(data, tiffStart, exifOffset, 0x9286, littleEndian);
+            if (userCommentEntry == 0)
+            {
+                return null;
+            }
+
+            // UserComment is type UNDEFINED (7): the count field holds the byte
+            // count, and the value field holds the payload offset (count > 4).
+            var count = ReadUInt32(data, userCommentEntry + 4, littleEndian);
+            var valueField = ReadUInt32(data, userCommentEntry + 8, littleEndian);
+
+            long payloadOffset;
+            if (count <= 4)
+            {
+                payloadOffset = userCommentEntry + 8; // inline in the value field
+            }
+            else
+            {
+                payloadOffset = tiffStart + valueField;
+            }
+
+            if (count < 8 || payloadOffset + count > data.Length)
+            {
+                return null;
+            }
+
+            var payload = new byte[count];
+            Array.Copy(data, payloadOffset, payload, 0, count);
+
+            // 8-byte "UNICODE\0" header followed by UTF-16BE encoded JSON.
+            if (payload.Length >= 8
+                && payload[0] == (byte)'U' && payload[1] == (byte)'N' && payload[2] == (byte)'I'
+                && payload[3] == (byte)'C' && payload[4] == (byte)'O' && payload[5] == (byte)'D'
+                && payload[6] == (byte)'E' && payload[7] == 0)
+            {
+                return Encoding.BigEndianUnicode.GetString(payload, 8, payload.Length - 8);
+            }
+
+            return null;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Scans an IFD at the given offset for a tag, returning the absolute byte
+    /// offset of the 12-byte IFD entry (0 if not found).
+    /// </summary>
+    private static long FindTagEntry(byte[] data, int tiffStart, long ifdOffset, int targetTag, bool littleEndian)
+    {
+        var entryCount = ReadUInt16(data, tiffStart + ifdOffset, littleEndian);
+        for (var i = 0; i < entryCount; i++)
+        {
+            var entry = tiffStart + ifdOffset + 2 + (i * 12);
+            if (entry + 12 > data.Length)
+            {
+                break;
+            }
+
+            var tag = ReadUInt16(data, entry, littleEndian);
+            if (tag == targetTag)
+            {
+                return entry;
+            }
+        }
+
+        return 0;
+    }
+
+    private static ushort ReadUInt16(byte[] data, long offset, bool littleEndian)
+    {
+        if (littleEndian)
+        {
+            return (ushort)(data[offset] | (data[offset + 1] << 8));
+        }
+
+        return (ushort)((data[offset] << 8) | data[offset + 1]);
+    }
+
+    private static uint ReadUInt32(byte[] data, long offset, bool littleEndian)
+    {
+        if (littleEndian)
+        {
+            return (uint)(data[offset] | (data[offset + 1] << 8) | (data[offset + 2] << 16) | (data[offset + 3] << 24));
+        }
+
+        return (uint)((data[offset] << 24) | (data[offset + 1] << 16) | (data[offset + 2] << 8) | data[offset + 3]);
     }
 
     private static FileParameters ReadRuinedFooocusParameters(string data)

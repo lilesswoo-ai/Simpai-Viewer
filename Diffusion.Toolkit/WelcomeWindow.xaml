@@ -18,7 +18,7 @@
         WindowStyle="ToolWindow"
         Style="{StaticResource BorderlessWindowStyle}"
         ResizeMode="NoResize"
-        Title="Welcome" Height="500" Width="600">
+        Title="{lex:Loc Simpai.Welcome.Title}" Height="500" Width="600">
     <Window.Resources>
         <ResourceDictionary>
             <converters:ValueVisibilityConverter x:Key="ValueVisible"></converters:ValueVisibilityConverter>

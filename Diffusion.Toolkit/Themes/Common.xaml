@@ -610,8 +610,8 @@
         </Setter>
     </Style>
     <Style x:Key="DataGridStyle1" TargetType="{x:Type DataGrid}">
-        <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
-        <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+        <Setter Property="Background" Value="{DynamicResource PrimaryBrush}"/>
+        <Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}"/>
         <Setter Property="BorderBrush" Value="#FF688CAF"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="RowDetailsVisibilityMode" Value="VisibleWhenSelected"/>
@@ -666,6 +666,27 @@
             </MultiTrigger>
         </Style.Triggers>
     </Style>
+
+    <Style TargetType="{x:Type DataGridColumnHeader}">
+        <Setter Property="Background" Value="{DynamicResource ControlBackgroundBrush}"/>
+        <Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource SecondaryBrush}"/>
+        <Setter Property="Padding" Value="4,2"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+    </Style>
+
+    <Style TargetType="{x:Type DataGridRow}">
+        <Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}"/>
+        <Setter Property="Background" Value="Transparent"/>
+    </Style>
+
+    <Style TargetType="{x:Type DataGridCell}">
+        <Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Padding" Value="4,2"/>
+    </Style>
+
     <Style TargetType="ToolTip">
         <Setter Property="Background" Value="{DynamicResource PrimaryBrush}"></Setter>
         <Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}"></Setter>
@@ -747,6 +768,7 @@
     <Style TargetType="TextBlock">
         <Setter Property="Background" Value="Transparent"></Setter>
         <Setter Property="VerticalAlignment" Value="Center"></Setter>
+        <Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}"></Setter>
     </Style>
 
     <Style x:Key="StaticButton" TargetType="Button">

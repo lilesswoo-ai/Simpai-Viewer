@@ -47,9 +47,25 @@ namespace Diffusion.Toolkit
 
         public ReleaseNotesModel()
         {
+            // Load localized release notes: Chinese content for zh-CN (or other
+            // non-English) cultures, English content otherwise. The English files
+            // are kept untouched and remain available for en-US users.
+            var culture = Configuration.Settings.Instance?.Culture ?? "zh-CN";
+            var isChinese = culture.StartsWith("zh", StringComparison.OrdinalIgnoreCase);
+
             var releaseNotes = ResourceHelper.GetResources("Diffusion.Toolkit.Release_Notes");
 
-            _files = releaseNotes.Where(SemanticVersion.IsSemanticVersion).OrderBy(SemanticVersion.Parse).ToList();
+            _files = releaseNotes
+                .Where(SemanticVersion.IsSemanticVersion)
+                .Where(f => isChinese ? f.Contains("zh-CN") : !f.Contains("zh-CN"))
+                .OrderBy(SemanticVersion.Parse)
+                .ToList();
+
+            if (_files.Count == 0)
+            {
+                // Fall back to whatever is available so the window is never empty.
+                _files = releaseNotes.Where(SemanticVersion.IsSemanticVersion).OrderBy(SemanticVersion.Parse).ToList();
+            }
 
             _currentFile = _files.Count - 1;
 

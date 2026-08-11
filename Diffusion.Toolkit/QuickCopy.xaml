@@ -4,6 +4,10 @@
                   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                   xmlns:local="clr-namespace:Diffusion.Toolkit"
+                  xmlns:lex="http://wpflocalizeextension.codeplex.com"
+                  lex:LocalizeDictionary.Provider="{StaticResource LocalizationProvider}"
+                  lex:LocalizeDictionary.Separation="."
+                  lex:LocalizeDictionary.DefaultProvider="{StaticResource LocalizationProvider}"
                   mc:Ignorable="d"        
                   WindowStartupLocation="CenterOwner"
                   ShowInTaskbar="False"
@@ -12,7 +16,7 @@
                   TitleWidth="*"
                   Style="{StaticResource BorderlessWindowStyle}"
                   ResizeMode="NoResize"
-                  Title="QuickCopy" Height="450" Width="800">
+                  Title="{lex:Loc Simpai.QuickCopy.Title}" Height="450" Width="800">
     <Grid>
         
     </Grid>

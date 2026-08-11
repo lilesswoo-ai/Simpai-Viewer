@@ -285,7 +285,7 @@
                 <StackPanel Width="400" HorizontalAlignment="Left" Margin="10">
                     <Label Content="{lex:Loc Settings.NSFW.NSFWTags}"></Label>
                     <TextBox Padding="5" Text="{Binding NSFWTags, UpdateSourceTrigger=PropertyChanged}" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" Margin="0,10,0,10" Height="200"></TextBox>
-                    <CheckBox IsChecked="{Binding AutoTagNSFW}" ToolTip="Automatically tag added images as NSFW" Content="{lex:Loc Settings.NSFW.AutoTagNSFW}"></CheckBox>
+                    <CheckBox IsChecked="{Binding AutoTagNSFW}" ToolTip="{lex:Loc Simpai.Settings.AutoTagNSFW.ToolTip}" Content="{lex:Loc Settings.NSFW.AutoTagNSFW}"></CheckBox>
                 </StackPanel>
             </TabItem>
             <TabItem Header="{lex:Loc Settings.Themes}">

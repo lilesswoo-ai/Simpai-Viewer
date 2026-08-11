@@ -1178,12 +1178,15 @@ namespace Diffusion.Toolkit.Pages
                         }
                         else
                         {
-                            imageViewModel.ModelName = notFound;
+                            // Fall back to the model name stored in the metadata
+                            // (e.g. SimpAI "Base Model") so users still see what
+                            // generated the image even when it is not in the DB.
+                            imageViewModel.ModelName = !string.IsNullOrEmpty(parameters.Model) ? parameters.Model : notFound;
                         }
                     }
                     else
                     {
-                        imageViewModel.ModelName = notFound;
+                        imageViewModel.ModelName = !string.IsNullOrEmpty(parameters.Model) ? parameters.Model : notFound;
                     }
 
                 }
@@ -1878,7 +1881,7 @@ namespace Diffusion.Toolkit.Pages
                 catch (Exception exception)
                 {
                     Logger.Log(exception);
-                    MessageBox.Show(exception.Message, "Error loading image", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show(exception.Message, GetLocalizedText("Simpai.Messages.ErrorLoadingImage"), MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
 

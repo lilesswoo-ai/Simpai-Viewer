@@ -331,7 +331,7 @@ public class FileService
                 catch (Exception e)
                 {
                     Logger.Log(e);
-                    MessageBox.Show(ServiceLocator.WindowService.CurrentWindow, $"An error occured while moving files: {e.Message}", "Moving Files", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show(ServiceLocator.WindowService.CurrentWindow, GetLocalizedText("Simpai.Messages.ErrorMovingFiles").Replace("{message}", e.Message), GetLocalizedText("Simpai.Messages.MovingFiles"), MessageBoxButton.OK, MessageBoxImage.Error);
                 }
                 finally
                 {

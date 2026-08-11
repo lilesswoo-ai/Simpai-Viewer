@@ -28,38 +28,44 @@ namespace Diffusion.Toolkit
 
         private void GoPortable()
         {
-            SwitchConfig("portable", AppInfo.AppDataPath, AppDir);
+            SwitchConfig("portable", AppInfo.AppDataPath, AppInfo.DatabaseAppDataPath, AppDir, AppDir);
         }
 
         private void GoLocal()
         {
-            SwitchConfig("application settings", AppDir, AppInfo.AppDataPath);
+            SwitchConfig("application settings", AppDir, AppDir, AppInfo.AppDataPath, AppInfo.DatabaseAppDataPath);
         }
 
-        private void SwitchConfig(string target, string sourcePath, string targetPath)
+        private void SwitchConfig(string target, string sourceSettingsPathDir, string sourceDbPathDir, string targetSettingsPathDir, string targetDbPathDir)
         {
-            string sourceSettingsPath = Path.Combine(sourcePath, "config.json");
-            string sourceDbPath = Path.Combine(sourcePath, "diffusion-toolkit.db");
+            string sourceSettingsPath = Path.Combine(sourceSettingsPathDir, "config.json");
+            string sourceDbPath = Path.Combine(sourceDbPathDir, "diffusion-toolkit.db");
 
-            string targetSettingsPath = Path.Combine(targetPath, "config.json");
-            string targetDbPath = Path.Combine(targetPath, "diffusion-toolkit.db");
+            string targetSettingsPath = Path.Combine(targetSettingsPathDir, "config.json");
+            string targetDbPath = Path.Combine(targetDbPathDir, "diffusion-toolkit.db");
 
 
             if (!File.Exists(targetSettingsPath) && !File.Exists(targetDbPath))
             {
-                File.Copy(sourceSettingsPath, targetSettingsPath);
-                File.Copy(sourceDbPath, targetDbPath);
+                if (File.Exists(sourceSettingsPath))
+                {
+                    File.Copy(sourceSettingsPath, targetSettingsPath);
+                }
+                if (File.Exists(sourceDbPath))
+                {
+                    File.Copy(sourceDbPath, targetDbPath);
+                }
 
                 File.Delete(sourceSettingsPath);
                 File.Delete(sourceDbPath);
             }
             else
             {
-                var existsDialogResult = MessageBox.Show(this, $"A configuration or database file was found in the {target} folder. Do you want to use it?", "SimpaiViewer", MessageBoxButton.YesNoCancel, MessageBoxImage.Warning, MessageBoxResult.Cancel);
+                var existsDialogResult = MessageBox.Show(this, GetLocalizedText("Simpai.Messages.ConfigFound").Replace("{target}", target), "SimpaiViewer", MessageBoxButton.YesNoCancel, MessageBoxImage.Warning, MessageBoxResult.Cancel);
 
                 if (existsDialogResult == MessageBoxResult.No)
                 {
-                    var confirmResult = MessageBox.Show(this, $"Are you sure you want to overwrite the files in the {target} folder?", "SimpaiViewer", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                    var confirmResult = MessageBox.Show(this, GetLocalizedText("Simpai.Messages.OverwriteFiles").Replace("{target}", target), "SimpaiViewer", MessageBoxButton.YesNo, MessageBoxImage.Warning);
 
                     if (confirmResult == MessageBoxResult.Yes)
                     {
@@ -87,8 +93,8 @@ namespace Diffusion.Toolkit
                     {
                         // rename portable files so that DT doesn't try to load them on startup
 
-                        var bSettingsPath = Path.Combine(sourcePath, "config.backup");
-                        var bDbPath = Path.Combine(sourcePath, "diffusion-toolkit.backup");
+                        var bSettingsPath = Path.Combine(sourceSettingsPathDir, "config.backup");
+                        var bDbPath = Path.Combine(sourceDbPathDir, "diffusion-toolkit.backup");
 
                         var moved = false;
 
@@ -106,7 +112,7 @@ namespace Diffusion.Toolkit
 
                         if (moved)
                         {
-                            MessageBox.Show(this, "Your portable files have been renamed to .backup", "SimpaiViewer", MessageBoxButton.OK);
+                            MessageBox.Show(this, GetLocalizedText("Simpai.Messages.PortableRenamed"), "SimpaiViewer", MessageBoxButton.OK);
                         }
                     }
 

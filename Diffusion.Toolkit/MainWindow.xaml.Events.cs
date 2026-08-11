@@ -267,7 +267,7 @@ namespace Diffusion.Toolkit
                 {
                     Logger.Log("Operation in progress, waiting to shut down...");
 
-                    var d = MessageBox.Show(this, "An operation is currently in progress. Are you sure you want to exit?", "Confirm close", MessageBoxButton.YesNo);
+                    var d = MessageBox.Show(this, GetLocalizedText("Simpai.Messages.OperationInProgress"), GetLocalizedText("Simpai.Messages.ConfirmClose"), MessageBoxButton.YesNo);
                     if (d == MessageBoxResult.No)
                     {
                         e.Cancel = true;

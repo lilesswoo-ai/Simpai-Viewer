@@ -120,10 +120,10 @@
                     <Separator />
                     <MenuItem ItemsSource="{Binding MainModel.OpenWithMenuItems}" Header="{lex:Loc Thumbnail.ContextMenu.OpenWith}"></MenuItem>
                     <Separator></Separator>
-                    <MenuItem Header="Fit to Preview" InputGestureText="CTRL+Shift+F" Command="{Binding MainModel.ToggleFitToPreview}" IsChecked="{Binding MainModel.FitToPreview}"></MenuItem>
-                    <MenuItem Header="Actual Size" InputGestureText="CTRL+Shift+A" Command="{Binding MainModel.ToggleActualSize}" IsChecked="{Binding MainModel.ActualSize}"></MenuItem>
+                    <MenuItem Header="{lex:Loc Simpai.PreviewPane.FitToPreview}" InputGestureText="CTRL+Shift+F" Command="{Binding MainModel.ToggleFitToPreview}" IsChecked="{Binding MainModel.FitToPreview}"></MenuItem>
+                    <MenuItem Header="{lex:Loc Simpai.PreviewPane.ActualSize}" InputGestureText="CTRL+Shift+A" Command="{Binding MainModel.ToggleActualSize}" IsChecked="{Binding MainModel.ActualSize}"></MenuItem>
                     <Separator></Separator>
-                    <MenuItem Header="Copy Path" Command="{Binding CopyPathCommand}"></MenuItem>
+                    <MenuItem Header="{lex:Loc Simpai.PreviewPane.CopyPath}" Command="{Binding CopyPathCommand}"></MenuItem>
                 </ContextMenu>
 
                 <!--Stretch="{Binding MainModel.FitToPreview, Converter={StaticResource stretch}, RelativeSource={RelativeSource  FindAncestor, AncestorType={x:Type UserControl}}}"-->
@@ -292,7 +292,7 @@
                     Visibility="{Binding ShowVolume, Converter={StaticResource boolToVis}}"
                     >
             </Slider>
-            <Button Grid.Row="2" Grid.Column="1" ToolTip="Loop Video" Click="Loop_Click" DataContext="{Binding Image, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}">
+            <Button Grid.Row="2" Grid.Column="1" ToolTip="{lex:Loc Simpai.PreviewPane.LoopVideo}" Click="Loop_Click" DataContext="{Binding Image, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}">
                 <Button.Style>
                     <Style TargetType="Button" BasedOn="{StaticResource StaticButton}">
                         <Style.Triggers>
@@ -322,7 +322,7 @@
                     </fa:ImageAwesome.Resources>
                 </fa:ImageAwesome>
             </Button>
-            <Button Grid.Row="2" Grid.Column="2" ToolTip="Volume" Click="Volume_Click" DataContext="{Binding Image, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}">
+            <Button Grid.Row="2" Grid.Column="2" ToolTip="{lex:Loc Simpai.PreviewPane.Volume}" Click="Volume_Click" DataContext="{Binding Image, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}">
                 <Button.Style>
                     <Style TargetType="Button" BasedOn="{StaticResource StaticButton}">
                         <Style.Triggers>

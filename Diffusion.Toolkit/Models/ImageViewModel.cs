@@ -87,7 +87,7 @@ public class ImageViewModel : BaseNotify
     {
         get
         {
-            var items = new List<MetadataItem>(14);
+            var items = new List<MetadataItem>(16);
 
             AddParameter(items, "Metadata.Steps", Steps > 0 ? Steps.ToString(CultureInfo.CurrentCulture) : null);
             AddParameter(items, "Metadata.Sampler", Sampler);
@@ -96,6 +96,16 @@ public class ImageViewModel : BaseNotify
             AddParameter(items, "Metadata.Size", Width > 0 && Height > 0 ? $"{Width}\u00d7{Height}" : null);
             AddParameter(items, "Metadata.ModelName", ModelName);
             AddParameter(items, "Metadata.ModelHash", ModelHash);
+            AddParameter(items, "Simpai.Metadata.Styles", GetOtherValue("Styles"));
+            AddParameter(items, "Simpai.Metadata.BackendEngine", GetOtherValue("Backend Engine"));
+            AddParameter(items, "Simpai.Metadata.CLIP", GetOtherValue("CLIP / Text Encoder"));
+            AddParameter(items, "Simpai.Metadata.VAE", GetOtherValue("VAE"));
+            AddParameter(items, "Simpai.Metadata.UpscaleModel", GetOtherValue("Upscale Model"));
+            AddParameter(items, "Simpai.Metadata.Sharpness", GetOtherValue("Sharpness"));
+            AddParameter(items, "Simpai.Metadata.Performance", GetOtherValue("Performance"));
+            AddParameter(items, "Simpai.Metadata.ADMGuidance", GetOtherValue("ADM Guidance"));
+            AddParameter(items, "Simpai.Metadata.Scheduler", GetOtherValue("Scheduler"));
+            AddParameter(items, "Simpai.Metadata.Version", GetOtherValue("Version"));
             AddParameter(items, "Simpai.Metadata.AestheticScore", AestheticScore is { Length: > 0 } aesthetic && aesthetic != "0" ? aesthetic : null);
             AddParameter(items, "Simpai.Metadata.HyperNetwork", HyperNetwork);
             AddParameter(items, "Simpai.Metadata.ClipSkip", ClipSkip is > 0 ? ClipSkip.Value.ToString(CultureInfo.CurrentCulture) : null);
@@ -106,6 +116,23 @@ public class ImageViewModel : BaseNotify
 
             return items;
         }
+    }
+
+    /// <summary>
+    /// Retrieves the value for a named key from the parsed "Other Parameters"
+    /// text (e.g. "Styles" or "Backend Engine"). Returns null when absent.
+    /// </summary>
+    private string? GetOtherValue(string key)
+    {
+        foreach (var item in ParseOtherParameters(OtherParameters))
+        {
+            if (string.Equals(item.Key, key, StringComparison.OrdinalIgnoreCase))
+            {
+                return item.Value;
+            }
+        }
+
+        return null;
     }
 
     /// <summary>
@@ -141,7 +168,9 @@ public class ImageViewModel : BaseNotify
     {
         "steps", "sampler", "cfg", "cfg scale", "seed", "size",
         "model", "model name", "model hash", "aesthetic", "aesthetic score", "aesthetic_score",
-        "hypernetwork", "clip skip", "ensd", "file size", "created", "modified", "date"
+        "hypernetwork", "clip skip", "ensd", "file size", "created", "modified", "date",
+        "styles", "backend engine", "clip / text encoder", "vae", "upscale model",
+        "sharpness", "performance", "adm guidance", "scheduler", "version"
     };
 
     private const string KnownKeyDelimiters =
@@ -153,6 +182,16 @@ public class ImageViewModel : BaseNotify
     private static readonly Regex OtherParameterRegex = new(
         $@"(?<key>[A-Za-z_][A-Za-z0-9_ .()/+\-]*?):\s*(?<value>.*?)(?=\s+(?:{KnownKeyDelimiters}):|$)",
         RegexOptions.Compiled | RegexOptions.Singleline);
+
+    /// <summary>
+    /// Splits a metadata line on commas, but only when the text following a
+    /// comma begins a new "Key:" pair. This keeps comma-separated A1111-style
+    /// parameters intact while preserving multi-value fields such as
+    /// "Styles: Artstyle Abstract, Watercolor 2" or "ADM Guidance: (1.5, 0.8, 0.3)".
+    /// </summary>
+    private static readonly Regex OtherParameterSplitRegex = new(
+        @",\s*(?=[A-Za-z_][A-Za-z0-9_ .()/+\-]*:)",
+        RegexOptions.Compiled);
 
     /// <summary>
     /// Parses a metadata "other parameters" string (which can be newline-,
@@ -176,7 +215,7 @@ public class ImageViewModel : BaseNotify
                 continue;
             }
 
-            foreach (var rawChunk in line.Split(','))
+            foreach (var rawChunk in OtherParameterSplitRegex.Split(line))
             {
                 var chunk = rawChunk.Trim();
                 if (chunk.Length == 0)
@@ -539,7 +578,37 @@ public class ImageViewModel : BaseNotify
     public string? Workflow
     {
         get;
-        set => SetField(ref field, value);
+        set
+        {
+            SetField(ref field, value);
+            OnPropertyChanged(nameof(FormattedWorkflow));
+        }
+    }
+
+    /// <summary>
+    /// Returns the raw workflow/metadata JSON pretty-printed so the "Raw
+    /// Metadata" panel is readable instead of a single wall of text. Falls
+    /// back to the raw string when it is not valid JSON.
+    /// </summary>
+    public string? FormattedWorkflow
+    {
+        get
+        {
+            if (string.IsNullOrWhiteSpace(Workflow))
+            {
+                return Workflow;
+            }
+
+            try
+            {
+                using var doc = System.Text.Json.JsonDocument.Parse(Workflow);
+                return System.Text.Json.JsonSerializer.Serialize(doc.RootElement, new System.Text.Json.JsonSerializerOptions { WriteIndented = true });
+            }
+            catch
+            {
+                return Workflow;
+            }
+        }
     }
 
     public ImageType Type

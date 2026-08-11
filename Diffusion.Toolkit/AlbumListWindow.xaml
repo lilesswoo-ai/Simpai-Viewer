@@ -16,7 +16,7 @@
                   TitleWidth="*"
                   WindowStyle="ToolWindow"
                   Style="{StaticResource BorderlessWindowStyle}"
-                  Title="Select Album" Height="450" Width="300">
+                  Title="{lex:Loc Simpai.AlbumList.Title}" Height="450" Width="300">
     <Window.InputBindings>
         <KeyBinding Key="Escape" Command="{Binding Escape}"></KeyBinding>
     </Window.InputBindings>

@@ -35,7 +35,7 @@
         </Grid.ContextMenu>
 
         <TabControl Background="Transparent" BorderBrush="{DynamicResource SecondaryBrush}">
-            <TabItem Header="Metadata" Background="Transparent" HorizontalContentAlignment="Stretch">
+            <TabItem Header="{lex:Loc Simpai.Metadata.Tabs.Metadata}" Background="Transparent" HorizontalContentAlignment="Stretch">
                 <ScrollViewer Background="Transparent" VerticalScrollBarVisibility="Auto">
                     <StackPanel Background="Transparent">
 
@@ -65,7 +65,7 @@
                                     <Button Style="{DynamicResource BorderlessButton}" Grid.Column="2" Command="{Binding CopyParametersCommand}" Content="{lex:Loc Metadata.Buttons.CopyAll}"/>
                                 </Grid>
                             </local:AccordionControl.ButtonAreaContent>
-                            <TextBox Background="#00000000" FontSize="14" BorderThickness="0"
+                            <TextBox Background="#00000000" FontSize="14" BorderThickness="0" FontFamily="Microsoft YaHei UI"
                                      IsReadOnly="True"
                                      Padding="5" TextWrapping="WrapWithOverflow" Text="{Binding Prompt}"/>
                         </local:AccordionControl>
@@ -82,7 +82,7 @@
                                     <Button Style="{DynamicResource BorderlessButton}" Grid.Column="1" Command="{Binding CopyNegativePromptCommand}" Content="{lex:Loc Metadata.Buttons.Copy}"/>
                                 </Grid>
                             </local:AccordionControl.ButtonAreaContent>
-                            <TextBox Background="#00000000" FontSize="14" BorderThickness="0"
+                            <TextBox Background="#00000000" FontSize="14" BorderThickness="0" FontFamily="Microsoft YaHei UI"
                                      IsReadOnly="True"
                                      Padding="5" TextWrapping="WrapWithOverflow" Text="{Binding NegativePrompt}"/>
                         </local:AccordionControl>
@@ -240,7 +240,7 @@
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>
-            <TabItem Header="Tags" Background="Transparent" HorizontalContentAlignment="Stretch">
+            <TabItem Header="{lex:Loc Simpai.Metadata.Tabs.Tags}" Background="Transparent" HorizontalContentAlignment="Stretch">
 
                 <Grid  Background="Transparent" Height="{Binding ActualHeight, RelativeSource={RelativeSource FindAncestor, AncestorType=TabControl, AncestorLevel=1}}">
                     <Grid.RowDefinitions>
@@ -294,7 +294,7 @@
                     </Grid>
                 </Grid>
             </TabItem>
-            <TabItem Header="Workflow" Background="Transparent" HorizontalContentAlignment="Stretch">
+            <TabItem Header="{lex:Loc Simpai.Metadata.Tabs.Workflow}" Background="Transparent" HorizontalContentAlignment="Stretch">
                 <ScrollViewer Background="Transparent" VerticalScrollBarVisibility="Auto">
                     <local:ComfyNodeStack Nodes="{Binding Nodes}" Background="Transparent"></local:ComfyNodeStack>
                 </ScrollViewer>
@@ -309,11 +309,11 @@
                     <ScrollViewer Grid.Row="1" Background="Transparent" 
                                   VerticalAlignment="Stretch"
                                   VerticalScrollBarVisibility="Auto">
-                        <TextBox FontFamily="Consolas" Padding="5" TextWrapping="Wrap" IsReadOnly="True" Margin="5" Text="{Binding Workflow}" Foreground="{DynamicResource ForegroundBrush}"></TextBox>
+                        <TextBox FontFamily="Consolas" Padding="5" TextWrapping="Wrap" IsReadOnly="True" Margin="5" Text="{Binding FormattedWorkflow, Mode=OneWay}" Foreground="{DynamicResource ForegroundBrush}"></TextBox>
                     </ScrollViewer>
                 </Grid>
             </TabItem>
-            <TabItem Visibility="{Binding HasError, Converter={StaticResource boolToVis}}" Header="Errors" Background="Transparent" HorizontalContentAlignment="Stretch">
+            <TabItem Visibility="{Binding HasError, Converter={StaticResource boolToVis}}" Header="{lex:Loc Simpai.Metadata.Tabs.Errors}" Background="Transparent" HorizontalContentAlignment="Stretch">
                 <Grid>
                     <ScrollViewer Grid.Row="0" Background="Transparent" 
                                   VerticalAlignment="Stretch"

@@ -67,7 +67,7 @@ namespace Diffusion.Toolkit
 
                 if (_dataStore.AddImagesToAlbum(album.Id, images.Select(x => x.Id)))
                 {
-                    ServiceLocator.ToastService.Toast($"{images.Count} image{(images.Count == 1 ? "" : "s")} added to \"{album.Name} \".", "Add to Album");
+                    ServiceLocator.ToastService.Toast(GetLocalizedText("Actions.Albums.AddImages.Toast").Replace("{images}", $"{images.Count}").Replace("{album}", album.Name), GetLocalizedText("Actions.Albums.Create.Title"));
 
                     UpdateAlbumCount(album.Id);
 
@@ -78,7 +78,7 @@ namespace Diffusion.Toolkit
                     //_search.ReloadMatches(null);
                 }
                 else
-                    MessageBox.Show("Album not found, please refresh and try again", "No Album");
+                    MessageBox.Show(GetLocalizedText("Simpai.Messages.AlbumNotFound"), GetLocalizedText("Simpai.Messages.NoAlbum"));
             });
 
             _model.RenameAlbumCommand = new AsyncCommand<AlbumModel>(async (album) =>
@@ -278,7 +278,7 @@ namespace Diffusion.Toolkit
                     //_search.ReloadMatches(null);
                 }
                 else
-                    MessageBox.Show("Album not found, please refresh and try again", "No Album");
+                    MessageBox.Show(GetLocalizedText("Simpai.Messages.AlbumNotFound"), GetLocalizedText("Simpai.Messages.NoAlbum"));
             }
         }
 

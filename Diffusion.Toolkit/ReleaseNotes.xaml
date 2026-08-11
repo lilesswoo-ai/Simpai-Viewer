@@ -20,7 +20,7 @@
         WindowStyle="ToolWindow"
         Style="{StaticResource BorderlessWindowStyle}"
         ResizeMode="NoResize"
-        Title="Release Notes" Height="600" Width="800">
+        Title="{lex:Loc Simpai.ReleaseNotes.Title}" Height="600" Width="800">
     <Window.InputBindings>
         <KeyBinding Key="Escape" Command="{Binding Escape}"></KeyBinding>
     </Window.InputBindings>

@@ -5,10 +5,21 @@ namespace Diffusion.Common;
 
 public static class AppInfo
 {
-    private const string AppName = "DiffusionToolkit";
+    private const string AppName = "SimpaiViewer";
+    // Keep the database at the legacy DiffusionToolkit location so existing
+    // image collections/favorites are preserved (no data migration).
+    private const string DataFolderName = "DiffusionToolkit";
+
     public static string AppDir { get; }
     public static SemanticVersion Version => SemanticVersionHelper.GetLocalVersion();
-    public static string AppDataPath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "DiffusionToolkit");
+    public static string AppDataPath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), AppName);
+
+    /// <summary>
+    /// The folder that holds the database when running in non-portable mode.
+    /// Kept at the legacy DiffusionToolkit location so existing collections,
+    /// favorites and other data are preserved (no data migration).
+    /// </summary>
+    public static string DatabaseAppDataPath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), DataFolderName);
 
     public static string DatabasePath { get; }
 
@@ -34,8 +45,11 @@ public static class AppInfo
         if (!File.Exists(SettingsPath))
         {
             IsPortable = false;
+            // Config is now SimpaiViewer-specific so a legacy DiffusionToolkit
+            // config.json can never override SimpaiViewer's defaults.
             SettingsPath = Path.Combine(AppInfo.AppDataPath, "config.json");
-            DatabasePath = Path.Combine(AppInfo.AppDataPath, "diffusion-toolkit.db");
+            // The database stays at the legacy location (no data migration).
+            DatabasePath = Path.Combine(AppInfo.DatabaseAppDataPath, "diffusion-toolkit.db");
         }
 
     }
