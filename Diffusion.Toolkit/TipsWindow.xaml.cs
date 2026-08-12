@@ -40,12 +40,9 @@ namespace Diffusion.Toolkit
         {
             InitializeComponent();
 
-            // Load the localized "Getting Started" content: Chinese for zh-CN
-            // (or other non-English) cultures, English otherwise.
-            var culture = Settings.Instance?.Culture ?? "zh-CN";
-            var tipsResource = culture.StartsWith("zh", System.StringComparison.OrdinalIgnoreCase)
-                ? "Diffusion.Toolkit.Tips.zh-CN.md"
-                : "Diffusion.Toolkit.Tips.md";
+            // 本软件（SimpaiViewer）为中文版，入门指南默认展示中文；
+            // 仅当中文资源缺失时，才回退到英文 Tips.md。
+            var tipsResource = "Diffusion.Toolkit.Tips.zh-CN.md";
 
             string markdown;
             try

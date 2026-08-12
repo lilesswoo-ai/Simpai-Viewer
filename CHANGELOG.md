@@ -2,6 +2,21 @@
 
 本文件记录 SimpaiViewer.NET 各版本的变更。详细的发布说明同时发布在 GitHub Releases。
 
+## v1.2.0（2026-08-12）
+
+### 修复与变更
+- **「入门指南」改为中文优先**
+  - 帮助菜单的「入门指南」/ 按 `F1` 现在默认展示中文指南（`Tips.zh-CN.md`），不再因运行时语言设置而显示英文。
+- **「检查更新」接入自家 GitHub 仓库**
+  - 更新检查（`UpdateChecker`）与自动更新器（`Diffusion.Updater`）的查询目标由上游 `RupertAvery/DiffusionToolkit` 改为本仓库 `lilesswoo-ai/Simpai-Viewer`，现在能正确检查并下载 SimpaiViewer 自己的新版本。
+  - 修正本地版本号识别（新增并随包发布 `version.txt`，内容 `v1.2.0`），此前因版本号文件缺失/沿用上游版本号导致更新判断错误。
+  - 自动更新器 `Diffusion.Updater.exe` 已随包发布，检查到新版本时可直接从 GitHub 下载并覆盖安装。
+- **版本号更新为 1.2.0**。
+
+### 下载与安装
+- 自包含版 `SimpaiViewer.NET-v1.2.0-win-x64-selfcontained.zip`：解压后双击 `SimpaiViewer.exe` 即可运行，已内嵌 .NET 10 运行时，无需安装。
+- 当前仅支持 Windows。
+
 ## v1.1.1（2026-08-12）
 
 基于 [DiffusionToolkit](https://github.com/RupertAvery/DiffusionToolkit)（MIT）派生，针对 SimpAI Studio / simpai 工作流做了本地化与体验增强。

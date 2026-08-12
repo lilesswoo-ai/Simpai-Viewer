@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Interop;
 using Diffusion.Common.Query;
+using Diffusion.Toolkit.AI;
 using Diffusion.Toolkit.Controls;
 
 namespace Diffusion.Toolkit.Configuration;
@@ -75,6 +76,7 @@ public class Settings : SettingsContainer, IScanOptions
         //    RecurseFolders = true;
         //}
         Volume = 1.0f;
+        AiSettings = new AiSettings();
         Instance = this;
     }
 
@@ -213,6 +215,12 @@ public class Settings : SettingsContainer, IScanOptions
     }
 
     public bool CheckForUpdatesOnStartup
+    {
+        get;
+        set => UpdateValue(ref field, value);
+    }
+
+    public AiSettings AiSettings
     {
         get;
         set => UpdateValue(ref field, value);

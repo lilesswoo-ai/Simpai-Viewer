@@ -15,6 +15,9 @@
     <Company>SimpaiViewer Project</Company>
     <Description>SimpaiViewer - image metadata-indexer and viewer for AI-generated images (fork of Diffusion Toolkit)</Description>
     <Copyright>Copyright (c) 2026 SimpaiViewer Project</Copyright>
+    <AssemblyVersion>1.2.0.0</AssemblyVersion>
+    <FileVersion>1.2.0.0</FileVersion>
+    <AssemblyInformationalVersion>1.2.0</AssemblyInformationalVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -93,10 +96,12 @@
     <None Remove="Tools\comfy-nodes-3.json" />
     <None Remove="Tools\comfy-nodes.json" />
     <None Remove="Tools\workflow.json" />
+    <None Remove="version.txt" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="simpai-viewer.ico" />
+    <Content Include="version.txt" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>

@@ -22,7 +22,7 @@ public class UpdateChecker
     public UpdateChecker()
     {
         _cts = new CancellationTokenSource();
-        Client = new GithubClient("RupertAvery", "DiffusionToolkit");
+        Client = new GithubClient("lilesswoo-ai", "Simpai-Viewer");
     }
 
     private async Task<Release> GetLatestRelease()
