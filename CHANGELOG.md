@@ -2,6 +2,23 @@
 
 本文件记录 SimpaiViewer.NET 各版本的变更。详细的发布说明同时发布在 GitHub Releases。
 
+## v1.2.1（2026-08-13）
+
+### 修复与变更
+- **修复 SimpleAI / SimpAI 生成图的生成参数不显示**
+  - 根因：这批图由 `SimpleAI.FluxAIO` 生成，其参数以两种方式存储，旧代码均读不到：
+    1. 生成参数写在 EXIF `UserComment` 中，但**直接位于 IFD0（非标准 ExifIFD）**，且为**无 `UNICODE\0` 编码头的裸 UTF-8 JSON**；
+    2. 版本检测只认 `SimpAI`，不认 `SimpleAI`，导致整段 JSON 被丢弃。
+  - 修复（`Diffusion.Scanner/Metadata.cs`）：
+    - `ReadExifUserComment` 新增 **IFD0 直接读取路径 + ASCII 类型**支持；
+    - `TryReadUserCommentEntry` 支持**无编码头的裸 UTF-8 JSON**（`{`/`[` 开头直接按 UTF-8 解码）；
+    - `IsSimpAIMetadata` 放宽 Version 检测，兼容 `SimpleAI` 与 `SimpAI`。
+  - 实测：该图现已正确读出 Prompt / Model（如 `kolors_unet_fp16`）/ ADM Guidance / Backend Engine 等字段。
+
+### 下载与安装
+- 自包含版 `SimpaiViewer_v1.2.1_win_x64.zip`：解压后双击 `SimpaiViewer.exe` 即可运行，已内嵌 .NET 10 运行时，无需安装。
+- 当前仅支持 Windows。
+
 ## v1.2.0（2026-08-12）
 
 ### 修复与变更
