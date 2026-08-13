@@ -382,6 +382,29 @@
                     <Button Click="Restore_DB" Width="200" Height="26" Content="{lex:Loc Settings.Database.Restore}"></Button>
                 </StackPanel>
             </TabItem>
+            <TabItem Header="AI 反推">
+                <Grid Margin="10">
+                    <StackPanel Width="620" HorizontalAlignment="Left">
+                        <CheckBox IsChecked="{Binding AiSettings.Enabled}" Margin="0,0,0,10"
+                                  Content="启用 AI 反推功能 (SimpaiAI Sidecar)"/>
+                        <Label Content="SimpaiAI Sidecar 地址"/>
+                        <TextBox Text="{Binding AiSettings.SidecarBaseUrl, UpdateSourceTrigger=PropertyChanged}" Height="26" Margin="0,0,0,10"/>
+                        <Label Content="超时时间 (秒)"/>
+                        <TextBox Text="{Binding AiSettings.TimeoutSeconds}" Height="26" Margin="0,0,0,10"/>
+                        <Button x:Name="AiTestButton" Content="测试连接并同步 Providers / Skills" Width="280" HorizontalAlignment="Left"
+                                Margin="0,0,0,10" Click="AiTestButton_Click"/>
+                        <TextBlock x:Name="AiStatusText" TextWrapping="Wrap" Foreground="#666666" Margin="0,0,0,10"/>
+                        <Label Content="默认 Provider"/>
+                        <ComboBox x:Name="AiProviderCombo" Margin="0,0,0,10" SelectionChanged="AiProviderCombo_SelectionChanged"/>
+                        <Label Content="默认 Prompt Skill"/>
+                        <ComboBox x:Name="AiSkillCombo" Margin="0,0,0,10" SelectionChanged="AiSkillCombo_SelectionChanged"/>
+                        <TextBlock TextWrapping="Wrap" Foreground="#888888" FontSize="11">
+                            Providers 与 Prompt Skills 由 SimpaiAI Sidecar 管理；启动 Sidecar 后点击上方按钮同步，
+                            或在 Sidecar 的 providers.yaml / skills 目录中配置。
+                        </TextBlock>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
         </TabControl>
         <Grid Grid.Row="0">
             <Grid.ColumnDefinitions>

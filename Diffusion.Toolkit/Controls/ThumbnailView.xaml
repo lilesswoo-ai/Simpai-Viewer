@@ -569,6 +569,9 @@
                         <MenuItem Header="{lex:Loc Thumbnail.ContextMenu.CopyParameter.Hash}" Command="{Binding CopyHashCommand}"/>
                         <MenuItem Header="{lex:Loc Thumbnail.ContextMenu.CopyParameter.All}" Command="{Binding CopyParametersCommand}"/>
                     </MenuItem>
+                    <Separator Style="{StaticResource FileSeparator}"/>
+                    <MenuItem Style="{StaticResource FileMenuItem}" Header="✨ AI 反推 Prompt" Command="{Binding AiReversePromptCommand}"/>
+                    <MenuItem Style="{StaticResource FileMenuItem}" Header="🔍 画面解构" Command="{Binding AiDeconstructCommand}"/>
                     <MenuItem Style="{StaticResource FileMenuItem}" Header="{lex:Loc Thumbnail.ContextMenu.CopyPath}" Command="{Binding CopyPathCommand}" />
                     <Separator Style="{StaticResource FileSeparator}"/>
                     <MenuItem Style="{StaticResource FileMenuItem}" Header="{lex:Loc Thumbnail.ContextMenu.Copy}" InputGestureText="Ctrl+C" Command="{Binding CopyCommand}" />

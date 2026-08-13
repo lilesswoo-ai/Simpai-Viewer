@@ -2,6 +2,32 @@
 
 本文件记录 SimpaiViewer.NET 各版本的变更。详细的发布说明同时发布在 GitHub Releases。
 
+## v2.0.1（2026-08-13）
+
+### 新功能：AI 反推 / 画面解构工作台（SimpaiAI）
+- **本地优先的 AI 反推能力（Phase 1–5 打通「选图 → 反推 → 显示 → 保存」单链）**
+  - 右键图片即可「✨ AI 反推 Prompt」或「🔍 画面解构」，结果在独立窗口展示并可一键保存到本地资产库。
+- **元数据优先（Metadata-first）**
+  - 自家生成图若已内置真实 Prompt / Negative Prompt，直接命中元数据返回，跳过视觉模型，**0 成本、100% 准确**（返回状态 `metadata_hit`）。
+- **9 维画面解构**
+  - 主体 / 环境 / 构图 / 光影 / 色彩 / 机位 / 镜头 / 材质 / 情绪 / 风格 / 姿态，结构化呈现。
+- **主色卡**
+  - 基于 OpenCV + KMeans 提取主导色（不依赖视觉模型），结果窗口以色块 + HEX 展示。
+- **创作型反推**
+  - 阶段 1 VLM 输出结构化理解，阶段 2 LLM 合成 Reverse Prompt / Negative Prompt / 关键词。
+- **本地资产沉淀**
+  - 结果写入本地 SQLite 的 `ai_image_analysis` 表（解构 / 色卡 / 关键词 均存 JSON），支持重新生成与覆盖保存。
+- **设置页新增「AI 反推」标签**
+  - 启用开关、SimpaiAI Sidecar 地址（默认 `http://127.0.0.1:8765`）、超时、测试连接并同步 Providers / Skills、默认 Provider 与 Skill 选择。
+- **架构**
+  - SimpaiAI Sidecar（独立 Python FastAPI 服务，端口 `:8765`）作为唯一 AI 网关，C# 端仅做薄 HTTP 客户端 + UI + DB 表，**隔离模型许可证风险**。
+
+> 注意：本版本仅包含查看器侧的 AI 工作台 UI 与本地资产库；AI 推理需另行运行 SimpaiAI Sidecar（Python）。Sidecar 默认以 Mock provider 离线可用，接入真实 VLM/LLM 需在 Sidecar 侧配置本地模型或 OpenAI 兼容服务。
+
+### 下载与安装
+- 自包含版 `SimpaiViewer_v2.0.1_win_x64.zip`：解压后双击 `SimpaiViewer.exe` 即可运行，已内嵌 .NET 10 运行时，无需安装。
+- 当前仅支持 Windows。
+
 ## v1.2.1（2026-08-13）
 
 ### 修复与变更

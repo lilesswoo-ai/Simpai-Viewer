@@ -75,6 +75,9 @@ namespace Diffusion.Toolkit.Controls
             Model.RemoveEntryCommand = new RelayCommand<object>(o => RemoveEntry());
             Model.CopyCommand = new RelayCommand<object>(o => CopySelected());
             Model.MoveCommand = new RelayCommand<object>(o => MoveSelected());
+
+            Model.AiReversePromptCommand = new RelayCommand<object>(o => _ = AiReversePrompt());
+            Model.AiDeconstructCommand = new RelayCommand<object>(o => _ = AiDeconstruct());
             Model.RescanCommand = new AsyncCommand<object>(o => RescanSelected());
             Model.RebuildThumbnailCommand = new RelayCommand<object>(o => RebuildThumbnails());
 

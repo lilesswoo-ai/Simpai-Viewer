@@ -22,6 +22,7 @@ using Diffusion.Database;
 using Diffusion.Toolkit.Configuration;
 using Diffusion.Toolkit.Localization;
 using Diffusion.Toolkit.Services;
+using Diffusion.Toolkit.AI;
 
 namespace Diffusion.Toolkit.Pages
 {
@@ -401,6 +402,53 @@ namespace Diffusion.Toolkit.Pages
                 _settings.Culture = _model.Culture;
 
             }
+        }
+
+        private async void AiTestButton_Click(object sender, RoutedEventArgs e)
+        {
+            var ai = _settings?.AiSettings;
+            if (ai == null) return;
+            var client = new AiServiceClient(ai.SidecarBaseUrl ?? "http://127.0.0.1:8765");
+            client.SetTimeout(ai.TimeoutSeconds);
+            AiStatusText.Text = "正在连接 Sidecar...";
+            try
+            {
+                bool ok = await client.HealthAsync();
+                if (!ok)
+                {
+                    AiStatusText.Text = "Sidecar 未响应，请确认它已启动。";
+                    return;
+                }
+                var providers = await client.GetProvidersAsync();
+                var skills = await client.GetSkillsAsync();
+                var provList = providers?.Providers ?? new List<ProviderDto>();
+                AiProviderCombo.ItemsSource = provList;
+                AiProviderCombo.DisplayMemberPath = "Name";
+                AiProviderCombo.SelectedValuePath = "Id";
+                AiProviderCombo.SelectedValue = ai.DefaultProviderId;
+                var skillList = skills?.Skills ?? new List<PromptSkill>();
+                AiSkillCombo.ItemsSource = skillList;
+                AiSkillCombo.DisplayMemberPath = "Name";
+                AiSkillCombo.SelectedValuePath = "Id";
+                AiSkillCombo.SelectedValue = ai.DefaultSkillId;
+                AiStatusText.Text = $"已连接。Providers: {provList.Count}，Skills: {skillList.Count}";
+            }
+            catch (Exception ex)
+            {
+                AiStatusText.Text = $"连接失败：{ex.Message}";
+            }
+        }
+
+        private void AiProviderCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (AiProviderCombo.SelectedValue is string id && _settings?.AiSettings != null)
+                _settings.AiSettings.DefaultProviderId = id;
+        }
+
+        private void AiSkillCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (AiSkillCombo.SelectedValue is string id && _settings?.AiSettings != null)
+                _settings.AiSettings.DefaultSkillId = id;
         }
 
 

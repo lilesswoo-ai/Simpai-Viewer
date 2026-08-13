@@ -175,6 +175,9 @@ public partial class DataStore
                 db.CreateTable<Query>();
                 db.CreateIndex<Query>(query => query.Name, true);
 
+                db.CreateTable<AiImageAnalysis>();
+                db.CreateIndex<AiImageAnalysis>(a => a.ImageId, true);
+
             }
             finally
             {

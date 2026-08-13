@@ -341,6 +341,18 @@ public class ThumbnailViewModel : BaseNotify
         set => SetField(ref field, value);
     }
 
+    public ICommand AiReversePromptCommand
+    {
+        get;
+        set => SetField(ref field, value);
+    }
+
+    public ICommand AiDeconstructCommand
+    {
+        get;
+        set => SetField(ref field, value);
+    }
+
     public int ThumbnailSize
     {
         get => _thumbnailSize;

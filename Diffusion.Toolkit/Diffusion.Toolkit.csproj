@@ -15,9 +15,9 @@
     <Company>SimpaiViewer Project</Company>
     <Description>SimpaiViewer - image metadata-indexer and viewer for AI-generated images (fork of Diffusion Toolkit)</Description>
     <Copyright>Copyright (c) 2026 SimpaiViewer Project</Copyright>
-    <AssemblyVersion>1.2.1.0</AssemblyVersion>
-    <FileVersion>1.2.1.0</FileVersion>
-    <AssemblyInformationalVersion>1.2.1</AssemblyInformationalVersion>
+    <AssemblyVersion>2.0.1.0</AssemblyVersion>
+    <FileVersion>2.0.1.0</FileVersion>
+    <AssemblyInformationalVersion>2.0.1</AssemblyInformationalVersion>
   </PropertyGroup>
 
   <ItemGroup>
