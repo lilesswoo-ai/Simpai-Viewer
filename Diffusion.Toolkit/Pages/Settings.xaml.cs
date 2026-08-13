@@ -130,7 +130,8 @@ namespace Diffusion.Toolkit.Pages
             {
                 new (GetLocalizedText("Settings.Themes.Theme.System"), "System"),
                 new (GetLocalizedText("Settings.Themes.Theme.Light"), "Light"),
-                new (GetLocalizedText("Settings.Themes.Theme.Dark"), "Dark")
+                new (GetLocalizedText("Settings.Themes.Theme.Dark"), "Dark"),
+                new ("Simpai 2.0", "Simpai2")
             };
 
             try

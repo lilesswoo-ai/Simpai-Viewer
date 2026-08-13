@@ -1,23 +1,32 @@
-﻿<ResourceDictionary  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+<ResourceDictionary  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <Color x:Key="Background">#182B3C</Color>
-    <Color x:Key="ControlBackground">#295275</Color>
-    <Color x:Key="Splitter">#3E5E7C</Color>
-    <Color x:Key="Focused">#3E5E7C</Color>
-    <Color x:Key="Highlight">#4E7EAC</Color>
-    <Color x:Key="HighlightFocused">#6E9EBC</Color>
-    <Color x:Key="BgHighlight">#7E3E5E7C</Color>
-    <Color x:Key="DisabledForeground">#3E5E7C</Color>
-    <Color x:Key="DisabledBackground">#797979</Color>
-    <Color x:Key="Foreground">Azure</Color>
-    <Color x:Key="PreviewBackground">#182B3C</Color>
-    <Color x:Key="ToastBackground">#00B3BB</Color>
-    <Color x:Key="WarningBackground">#4A3B15</Color>
+    <!-- Simpai 2.0 品牌主题：深海军蓝背景 + 冷调近白文字 + 靛蓝→蓝→青→紫品牌渐变强调色
+         配色取自 2.0 版 UI 设计稿（程序化取色）：背景 #0C1018 / 面板 #151A28，
+         文字 #EDEEF9，强调 靛蓝 #2A3A8F、蓝 #2D6CDF、青 #3EB3FC、紫 #C674FB。 -->
+
+    <Color x:Key="Background">#0C1018</Color>
+    <Color x:Key="ControlBackground">#151A28</Color>
+    <Color x:Key="Splitter">#2A2F40</Color>
+    <Color x:Key="Focused">#3EB3FC</Color>
+    <Color x:Key="Highlight">#2A3A8F</Color>
+    <Color x:Key="HighlightFocused">#4A6FE0</Color>
+    <Color x:Key="BgHighlight">#7E2A3A8F</Color>
+    <Color x:Key="DisabledForeground">#4A4F60</Color>
+    <Color x:Key="DisabledBackground">#232838</Color>
+    <Color x:Key="Foreground">#EDEEF9</Color>
+    <Color x:Key="PreviewBackground">#0C1018</Color>
+    <Color x:Key="ToastBackground">#2D6CDF</Color>
+    <Color x:Key="WarningBackground">#3A2E12</Color>
     <Color x:Key="WarningForeground">#FFD98E</Color>
 
-    <SolidColorBrush x:Key="TitleForeground" Color="{StaticResource Foreground}"/>
-    <FontFamily x:Key="TitleFontFamily">Segoe UI</FontFamily>
+    <!-- 品牌标题：靛蓝→青→紫渐变 + 名称字体（仅 Simpai2 主题生效） -->
+    <LinearGradientBrush x:Key="TitleForeground" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#5B6CFF" Offset="0"/>
+        <GradientStop Color="#3EB3FC" Offset="0.5"/>
+        <GradientStop Color="#C674FB" Offset="1"/>
+    </LinearGradientBrush>
+    <FontFamily x:Key="TitleFontFamily">Segoe UI Semibold</FontFamily>
 
 
     <BitmapImage  x:Key="CopyIcon" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="pack://application:,,,/Icons/Dark/copy-32.png" />

@@ -2,6 +2,18 @@
 
 本文件记录 SimpaiViewer.NET 各版本的变更。详细的发布说明同时发布在 GitHub Releases。
 
+## v2.0.3（2026-08-14）
+
+### 修复：Sidecar 启动器稳定性 + AI 设置绑定
+- **#1 启动竞态（必修）**：`SidecarLauncher.Start()` 加锁，判断「是否运行」与「赋值 `_process`」改为同一把锁内的原子操作，自动启动与手动启动并发时不再双重拉起 uvicorn。
+- **#2 UI 阻塞（次要）**：`Stop()` 先在锁内把 `_process` 置空、再对局部变量执行 `Kill`+`WaitForExit`，并由调用方 `AiStopButton_Click` 改为 `await Task.Run(...)` 在后台线程停止，最长 5 秒的等待不再冻结界面；新增 `Exited` 事件，进程被外部结束时自动清理 `_process`。
+- **#6 AI 设置绑定（必修）**：`SettingsModel` 新增 `AiSettings` 属性，并在 `InitializeSettings`/`ApplySettings` 与 `Configuration.Settings.AiSettings` 双向映射，解决设置页「AI 反推」标签里地址 / 目录 / 自动启动等输入框此前静默失效的问题。
+
+### 新功能：Simpai 2.0 品牌主题 + 新图标
+- **新图标**：`simpai-viewer.ico` 替换为 2.0 版设计稿的「靛蓝→青→紫」渐变品牌 Logo（16/24/32/48/64/128/256 七档，透明背景），同步更新 exe / 任务栏 / 标题栏图标。
+- **新主题 `Simpai2`**：在「设置 → 主题」新增 **Simpai 2.0** 选项。基于 2.0 UI 设计稿程序化取色——深海军蓝背景（`#0C1018` / 面板 `#151A28`）、冷调近白文字（`#EDEEF9`）、品牌强调色（靛蓝 `#2A3A8F`、蓝 `#2D6CDF`、青 `#3EB3FC`、紫 `#C674FB`）；标题栏软件名采用同款渐变 + 半粗字体，深色主题下呈现品牌识别。仅替换颜色 / 文字风格 / 名称字体，**未重做整体界面结构**。
+- 复用现有 `Icons/Dark` 图标集，保证深色环境下的图标可读性。
+
 ## v2.0.2（2026-08-13）
 
 ### 新功能：内置一键启动 / 停止 SimpaiAI Sidecar

@@ -100,7 +100,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="simpai-viewer.ico" />
+    <Resource Include="simpai-viewer.ico" />
     <Content Include="version.txt" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 

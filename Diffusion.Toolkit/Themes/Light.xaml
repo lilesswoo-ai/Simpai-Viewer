@@ -16,6 +16,9 @@
     <Color x:Key="WarningBackground">#FFF3CD</Color>
     <Color x:Key="WarningForeground">#664D03</Color>
 
+    <SolidColorBrush x:Key="TitleForeground" Color="{StaticResource Foreground}"/>
+    <FontFamily x:Key="TitleFontFamily">Segoe UI</FontFamily>
+
 
     <BitmapImage  x:Key="CopyIcon" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="pack://application:,,,/Icons/Light/copy-32.png" />
     <BitmapImage  x:Key="FavoriteIcon" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="pack://application:,,,/Icons/Light/favorite-32.png" />
