@@ -533,21 +533,31 @@ public class Metadata
                                             break;
 
                                         case "User Comment":
-                                            if (isFoocus)
                                             {
-                                                fileParameters = format switch
+                                                var userCommentDescription = tag.Description;
+
+                                                // Some generators (SimpAI / SimpleAI / Fooocus forks) store the
+                                                // generation metadata as a JSON object in the IFD0 User Comment.
+                                                // Try to parse it before falling back to the Fooocus/A1111/ComfyUI
+                                                // interpretations.
+                                                if (TryReadSimpAIParameters(userCommentDescription, out var simpaiParameters))
                                                 {
-                                                    MetaFormat.Fooocus => ReadFooocusParameters(tag.Description),
-                                                    MetaFormat.A1111 => ReadA111Parameters(tag.Description),
-                                                    _ => fileParameters
-                                                };
-                                            }
-                                            else
-                                            {
-                                                if (tag.Description.StartsWith("{\"prompt\":"))
+                                                    format = MetaFormat.SimpAI;
+                                                    fileParameters = simpaiParameters;
+                                                }
+                                                else if (isFoocus)
+                                                {
+                                                    fileParameters = format switch
+                                                    {
+                                                        MetaFormat.Fooocus => ReadFooocusParameters(userCommentDescription),
+                                                        MetaFormat.A1111 => ReadA111Parameters(userCommentDescription),
+                                                        _ => fileParameters
+                                                    };
+                                                }
+                                                else if (userCommentDescription.StartsWith("{\"prompt\":"))
                                                 {
                                                     format = MetaFormat.ComfyUI;
-                                                    var tempParameters = ReadComfyUIParameters(tag.Description, parser, true);
+                                                    var tempParameters = ReadComfyUIParameters(userCommentDescription, parser, true);
 
                                                     if (fileParameters == null)
                                                     {
@@ -560,8 +570,9 @@ public class Metadata
                                                         fileParameters.Nodes = tempParameters.Nodes;
                                                     }
                                                 }
+
+                                                break;
                                             }
-                                            break;
                                     }
                                 }
 
@@ -1486,7 +1497,9 @@ public class Metadata
             if (root.TryGetProperty("Version", out var version) && version.ValueKind == JsonValueKind.String)
             {
                 var versionText = version.GetString();
-                if (!string.IsNullOrEmpty(versionText) && versionText.Contains("SimpAI", StringComparison.OrdinalIgnoreCase))
+                if (!string.IsNullOrEmpty(versionText) &&
+                    (versionText.Contains("SimpAI", StringComparison.OrdinalIgnoreCase) ||
+                     versionText.Contains("SimpleAI", StringComparison.OrdinalIgnoreCase)))
                 {
                     return true;
                 }
@@ -1710,6 +1723,24 @@ public class Metadata
             trimmed = trimmed.Substring("parameters:".Length).TrimStart();
         }
 
+        // MetadataExtractor sometimes returns the raw UserComment bytes including
+        // the 8-byte encoding header. Strip known headers before checking for JSON.
+        if (trimmed.Length >= 8 && !trimmed.StartsWith("{"))
+        {
+            var firstChar = trimmed[0];
+            var possibleHeader = trimmed.Substring(0, 8);
+            if (firstChar == '{' || firstChar == '[')
+            {
+                // already JSON
+            }
+            else if (possibleHeader.StartsWith("UNICODE\0") ||
+                     possibleHeader.StartsWith("ASCII\0\0\0") ||
+                     possibleHeader == "\0\0\0\0\0\0\0\0")
+            {
+                trimmed = trimmed.Substring(8).TrimStart('\0');
+            }
+        }
+
         if (!trimmed.StartsWith("{"))
         {
             return false;
@@ -1802,6 +1833,13 @@ public class Metadata
     /// Parses a TIFF block (starting after the "Exif\0\0" marker) and returns
     /// the decoded UserComment string from the ExifIFD (0x9286), or null.
     /// </summary>
+    /// <remarks>
+    /// Most cameras/tools store UserComment in the ExifIFD pointed to by IFD0's
+    /// ExifOffset (0x8769).  Some generators (e.g. SimpleAI / Fooocus forks)
+    /// place UserComment directly in IFD0 and mark it as ASCII (type 2) rather
+    /// than UNDEFINED (type 7).  This method tries the standard ExifIFD path
+    /// first, then falls back to reading UserComment directly from IFD0.
+    /// </remarks>
     private static string? ReadExifUserComment(byte[] data, int tiffStart)
     {
         try
@@ -1831,55 +1869,141 @@ public class Metadata
                 return null;
             }
 
+            // Standard path: IFD0 -> ExifOffset (0x8769) -> ExifIFD -> UserComment (0x9286).
             var exifEntry = FindTagEntry(data, tiffStart, ifd0Offset, 0x8769, littleEndian);
-            if (exifEntry == 0)
+            if (exifEntry != 0)
             {
-                return null;
+                var exifOffset = ReadUInt32(data, exifEntry + 8, littleEndian);
+                if (exifOffset != 0 && tiffStart + exifOffset + 2 <= data.Length)
+                {
+                    var userCommentEntry = FindTagEntry(data, tiffStart, exifOffset, 0x9286, littleEndian);
+                    if (userCommentEntry != 0)
+                    {
+                        var result = TryReadUserCommentEntry(data, tiffStart, userCommentEntry, littleEndian);
+                        if (!string.IsNullOrWhiteSpace(result))
+                        {
+                            return result;
+                        }
+                    }
+                }
             }
 
-            // ExifOffset (0x8769) is a LONG; its value field holds the offset directly.
-            var exifOffset = ReadUInt32(data, exifEntry + 8, littleEndian);
-            if (exifOffset == 0 || tiffStart + exifOffset + 2 > data.Length)
+            // Fallback: UserComment may live directly in IFD0 (non-standard, used by
+            // some Fooocus/SimpAI/SimpleAI variants) and/or be tagged as ASCII.
+            var ifd0UserCommentEntry = FindTagEntry(data, tiffStart, ifd0Offset, 0x9286, littleEndian);
+            if (ifd0UserCommentEntry != 0)
             {
-                return null;
+                var result = TryReadUserCommentEntry(data, tiffStart, ifd0UserCommentEntry, littleEndian);
+                if (!string.IsNullOrWhiteSpace(result))
+                {
+                    return result;
+                }
             }
 
-            var userCommentEntry = FindTagEntry(data, tiffStart, exifOffset, 0x9286, littleEndian);
-            if (userCommentEntry == 0)
-            {
-                return null;
-            }
+            return null;
+        }
+        catch
+        {
+            return null;
+        }
+    }
 
-            // UserComment is type UNDEFINED (7): the count field holds the byte
-            // count, and the value field holds the payload offset (count > 4).
-            var count = ReadUInt32(data, userCommentEntry + 4, littleEndian);
-            var valueField = ReadUInt32(data, userCommentEntry + 8, littleEndian);
+    /// <summary>
+    /// Reads a single 12-byte IFD entry for UserComment (0x9286) and decodes
+    /// its payload.  Handles UNDEFINED (7) and ASCII (2) types, with or without
+    /// the standard 8-byte encoding header.
+    /// </summary>
+    private static string? TryReadUserCommentEntry(byte[] data, int tiffStart, long entryOffset, bool littleEndian)
+    {
+        try
+        {
+            // Tag (2) + Type (2) + Count (4) + Value/Offset (4).
+            var type = ReadUInt16(data, entryOffset + 2, littleEndian);
+            var count = ReadUInt32(data, entryOffset + 4, littleEndian);
+            var valueField = ReadUInt32(data, entryOffset + 8, littleEndian);
 
+            // For both UNDEFINED and ASCII, the value/offset field convention is the same:
+            // if the data fits in 4 bytes it is stored inline, otherwise it is an offset.
             long payloadOffset;
+            uint payloadLength;
             if (count <= 4)
             {
-                payloadOffset = userCommentEntry + 8; // inline in the value field
+                payloadOffset = entryOffset + 8;
+                payloadLength = count;
             }
             else
             {
                 payloadOffset = tiffStart + valueField;
+                payloadLength = count;
             }
 
-            if (count < 8 || payloadOffset + count > data.Length)
+            if (payloadLength == 0 || payloadOffset + payloadLength > data.Length)
             {
                 return null;
             }
 
-            var payload = new byte[count];
-            Array.Copy(data, payloadOffset, payload, 0, count);
+            var payload = new byte[payloadLength];
+            Array.Copy(data, payloadOffset, payload, 0, payloadLength);
 
-            // 8-byte "UNICODE\0" header followed by UTF-16BE encoded JSON.
-            if (payload.Length >= 8
-                && payload[0] == (byte)'U' && payload[1] == (byte)'N' && payload[2] == (byte)'I'
-                && payload[3] == (byte)'C' && payload[4] == (byte)'O' && payload[5] == (byte)'D'
-                && payload[6] == (byte)'E' && payload[7] == 0)
+            // ASCII strings may be null-terminated; trim trailing NUL bytes.
+            if (type == 2)
             {
-                return Encoding.BigEndianUnicode.GetString(payload, 8, payload.Length - 8);
+                var asciiLength = payloadLength;
+                while (asciiLength > 0 && payload[asciiLength - 1] == 0)
+                {
+                    asciiLength--;
+                }
+
+                if (asciiLength > 0)
+                {
+                    var ascii = Encoding.ASCII.GetString(payload, 0, (int)asciiLength);
+                    // Some tools store raw UTF-8 JSON under the ASCII type tag.
+                    return ascii;
+                }
+
+                return null;
+            }
+
+            // UNDEFINED (7) - may include an 8-byte encoding header.
+            if (payload.Length >= 8)
+            {
+                var header = payload.AsSpan(0, 8);
+
+                // UNICODE (UTF-16BE) header: "UNICODE\0"
+                if (header[0] == (byte)'U' && header[1] == (byte)'N' && header[2] == (byte)'I'
+                    && header[3] == (byte)'C' && header[4] == (byte)'O' && header[5] == (byte)'D'
+                    && header[6] == (byte)'E' && header[7] == 0)
+                {
+                    return Encoding.BigEndianUnicode.GetString(payload, 8, payload.Length - 8);
+                }
+
+                // ASCII header: "ASCII\0\0\0"
+                if (header[0] == (byte)'A' && header[1] == (byte)'S' && header[2] == (byte)'C'
+                    && header[3] == (byte)'I' && header[4] == (byte)'I'
+                    && header[5] == 0 && header[6] == 0 && header[7] == 0)
+                {
+                    return Encoding.ASCII.GetString(payload, 8, payload.Length - 8);
+                }
+
+                // Some generators write raw UTF-8 JSON with no encoding header.
+                var firstChar = payload[0];
+                if (firstChar == (byte)'{' || firstChar == (byte)'[')
+                {
+                    return Encoding.UTF8.GetString(payload);
+                }
+
+                if (header.SequenceEqual(new byte[] { 0, 0, 0, 0, 0, 0, 0, 0 }))
+                {
+                    var body = payload.AsSpan(8);
+                    if (body.Length > 0 && (body[0] == (byte)'{' || body[0] == (byte)'['))
+                    {
+                        return Encoding.UTF8.GetString(body.ToArray());
+                    }
+                }
+            }
+            else if (payload.Length > 0 && (payload[0] == (byte)'{' || payload[0] == (byte)'['))
+            {
+                return Encoding.UTF8.GetString(payload);
             }
 
             return null;
