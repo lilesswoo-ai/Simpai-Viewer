@@ -10,6 +10,7 @@ using Diffusion.Toolkit.Controls;
 using Diffusion.Toolkit.Models;
 using Diffusion.Toolkit.Pages;
 using Diffusion.Toolkit.Services;
+using Diffusion.Toolkit.AI;
 using Diffusion.Toolkit.Themes;
 using Diffusion.Toolkit.Thumbnails;
 using Microsoft.Win32;
@@ -727,6 +728,8 @@ namespace Diffusion.Toolkit
 
             ServiceLocator.SetSettings(_settings);
 
+            TryAutoStartSidecar();
+
             Logger.Log($"Initializing pages");
 
 
@@ -1076,6 +1079,42 @@ namespace Diffusion.Toolkit
 
             //Process.Start("explorer.exe", $"/select,\"{p}\"");
 
+        }
+
+        /// <summary>
+        /// 若启用了自动启动且 Sidecar 当前未运行，则后台拉起 Sidecar。
+        /// 在 UI 线程之外异步执行，避免阻塞应用启动。
+        /// </summary>
+        private static void TryAutoStartSidecar()
+        {
+            var ai = ServiceLocator.Settings?.AiSettings;
+            if (ai == null || !ai.AutoStartSidecar) return;
+
+            Task.Run(async () =>
+            {
+                try
+                {
+                    if (SidecarLauncher.IsRunning) return;
+
+                    var baseUrl = ai.SidecarBaseUrl ?? "http://127.0.0.1:8765";
+                    var probe = new AiServiceClient(baseUrl);
+                    probe.SetTimeout(2);
+                    if (await probe.HealthAsync())
+                    {
+                        // 已经有实例在响应，无需重复启动
+                        return;
+                    }
+
+                    if (!SidecarLauncher.IsRunning)
+                    {
+                        SidecarLauncher.Start(ai);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Logger.Log($"自动启动 Sidecar 失败：{ex.Message}");
+                }
+            });
         }
 
         private async void ShowSettings(object obj)

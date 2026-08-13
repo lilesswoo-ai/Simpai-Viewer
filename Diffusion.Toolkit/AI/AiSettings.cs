@@ -11,6 +11,7 @@ public class AiSettings
     public string SidecarBaseUrl { get; set; } = "http://127.0.0.1:8765";
     public int TimeoutSeconds { get; set; } = 120;
     public bool AutoStartSidecar { get; set; } = true;
+    public string SidecarPath { get; set; } = "sidecar";
 
     public List<AiProviderSettings> Providers { get; set; } = new();
     public string? DefaultProviderId { get; set; }

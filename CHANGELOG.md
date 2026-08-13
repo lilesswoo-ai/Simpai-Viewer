@@ -2,6 +2,18 @@
 
 本文件记录 SimpaiViewer.NET 各版本的变更。详细的发布说明同时发布在 GitHub Releases。
 
+## v2.0.2（2026-08-13）
+
+### 新功能：内置一键启动 / 停止 SimpaiAI Sidecar
+- **设置页「AI 反推」新增启动能力**
+  - 「启动 Sidecar」「停止 Sidecar」按钮：直接在本机拉起 / 关闭捆绑部署的 `sidecar/` 目录下的 Python FastAPI 服务（`:8765`），无需手动开命令行。
+  - 实时**状态显示**：设置页加载与每次操作后刷新，显示「Sidecar 运行中 / 未运行 / 进程在运行但无响应 / 启动失败原因」。
+  - 新增 `Sidecar 目录` 配置（相对 SimpaiViewer，默认 `sidecar`），指向随软件部署的 Sidecar 文件夹。
+- **自动启动**
+  - 新增 `AutoStartSidecar`（默认开）：打开 SimpaiViewer 时若 Sidecar 未响应，自动在后台拉起，不阻塞启动。
+- **Sidecar 随软件部署**
+  - SimpaiAI 代码部署到 `<SimpaiViewer>/sidecar/`，并内置 `.venv`（轻量依赖：fastapi / uvicorn / opencv / numpy / jinja2 等），Mock provider 可**完全离线**跑通整条反推链路；需真实 VLM/LLM 时在该 venv 内 `pip install torch transformers` 即可。
+
 ## v2.0.1（2026-08-13）
 
 ### 新功能：AI 反推 / 画面解构工作台（SimpaiAI）

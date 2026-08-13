@@ -391,6 +391,15 @@
                         <TextBox Text="{Binding AiSettings.SidecarBaseUrl, UpdateSourceTrigger=PropertyChanged}" Height="26" Margin="0,0,0,10"/>
                         <Label Content="超时时间 (秒)"/>
                         <TextBox Text="{Binding AiSettings.TimeoutSeconds}" Height="26" Margin="0,0,0,10"/>
+                        <CheckBox IsChecked="{Binding AiSettings.AutoStartSidecar}" Margin="0,0,0,10"
+                                  Content="启动 SimpaiViewer 时自动启动 Sidecar"/>
+                        <Label Content="Sidecar 目录（相对于 SimpaiViewer，默认 sidecar）"/>
+                        <TextBox Text="{Binding AiSettings.SidecarPath, UpdateSourceTrigger=PropertyChanged}" Height="26" Margin="0,0,0,10"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
+                            <Button x:Name="AiStartButton" Content="启动 Sidecar" Width="120" Margin="0,0,10,0" Click="AiStartButton_Click"/>
+                            <Button x:Name="AiStopButton" Content="停止 Sidecar" Width="120" Margin="0,0,10,0" Click="AiStopButton_Click"/>
+                            <TextBlock x:Name="AiSidecarStatusText" VerticalAlignment="Center" Foreground="#666666"/>
+                        </StackPanel>
                         <Button x:Name="AiTestButton" Content="测试连接并同步 Providers / Skills" Width="280" HorizontalAlignment="Left"
                                 Margin="0,0,0,10" Click="AiTestButton_Click"/>
                         <TextBlock x:Name="AiStatusText" TextWrapping="Wrap" Foreground="#666666" Margin="0,0,0,10"/>

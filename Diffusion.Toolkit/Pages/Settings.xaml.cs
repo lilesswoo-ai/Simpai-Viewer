@@ -66,6 +66,8 @@ namespace Diffusion.Toolkit.Pages
             };
 
             DataContext = _model;
+
+            Loaded += (_, _) => UpdateSidecarStatus();
         }
 
         private void InitializeSettings()
@@ -432,11 +434,64 @@ namespace Diffusion.Toolkit.Pages
                 AiSkillCombo.SelectedValuePath = "Id";
                 AiSkillCombo.SelectedValue = ai.DefaultSkillId;
                 AiStatusText.Text = $"已连接。Providers: {provList.Count}，Skills: {skillList.Count}";
+                UpdateSidecarStatus();
             }
             catch (Exception ex)
             {
                 AiStatusText.Text = $"连接失败：{ex.Message}";
             }
+        }
+
+        private async void AiStartButton_Click(object sender, RoutedEventArgs e)
+        {
+            var ai = _settings?.AiSettings;
+            if (ai == null) return;
+            try
+            {
+                if (SidecarLauncher.IsRunning)
+                {
+                    AiSidecarStatusText.Text = "Sidecar 已在运行";
+                    return;
+                }
+                SidecarLauncher.Start(ai);
+                var client = new AiServiceClient(ai.SidecarBaseUrl ?? "http://127.0.0.1:8765");
+                client.SetTimeout(10);
+                bool ok = false;
+                for (int i = 0; i < 20; i++)
+                {
+                    await Task.Delay(500);
+                    ok = await client.HealthAsync();
+                    if (ok) break;
+                }
+                AiSidecarStatusText.Text = ok ? "Sidecar 已启动并连接" : "已启动，但暂未连通（检查依赖/日志）";
+            }
+            catch (Exception ex)
+            {
+                AiSidecarStatusText.Text = $"启动失败：{ex.Message}";
+            }
+        }
+
+        private void AiStopButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                SidecarLauncher.Stop();
+                AiSidecarStatusText.Text = "Sidecar 已停止";
+            }
+            catch (Exception ex)
+            {
+                AiSidecarStatusText.Text = $"停止失败：{ex.Message}";
+            }
+        }
+
+        private async void UpdateSidecarStatus()
+        {
+            var ai = _settings?.AiSettings;
+            if (ai == null) return;
+            var client = new AiServiceClient(ai.SidecarBaseUrl ?? "http://127.0.0.1:8765");
+            client.SetTimeout(5);
+            bool ok = await client.HealthAsync();
+            AiSidecarStatusText.Text = ok ? "Sidecar 运行中" : (SidecarLauncher.IsRunning ? "Sidecar 进程在运行但无响应" : "Sidecar 未运行");
         }
 
         private void AiProviderCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
