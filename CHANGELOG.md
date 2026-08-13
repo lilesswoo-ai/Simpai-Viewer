@@ -13,6 +13,11 @@
   - 新增 `AutoStartSidecar`（默认开）：打开 SimpaiViewer 时若 Sidecar 未响应，自动在后台拉起，不阻塞启动。
 - **Sidecar 随软件部署**
   - SimpaiAI 代码部署到 `<SimpaiViewer>/sidecar/`，并内置 `.venv`（轻量依赖：fastapi / uvicorn / opencv / numpy / jinja2 等），Mock provider 可**完全离线**跑通整条反推链路；需真实 VLM/LLM 时在该 venv 内 `pip install torch transformers` 即可。
+- **离线容错（默认即用）**
+  - `select_providers` 在运行环境缺少 `torch`/`transformers`（精简 venv）时，会自动跳过本地模型 provider，回退到 `mock` provider。因此「启动 Sidecar」后，反推 / 解构在**默认配置下即可离线跑通**，不会因缺少本地模型而 502；装入权重并安装 torch 后本地模型自动启用。
+  - 校验：`/v1/reverse-prompt` 与 `/v1/deconstruct` 在不指定 `provider_id` 时均返回 `200` 的 Mock 结构化结果。
+
+> 分发说明：GitHub Release 的 `SimpaiViewer_v2.0.2_win_x64.zip` **不含** `sidecar/models`（约 24 GB 本地权重，GitHub 单文件上限 2 GB），解压后 Mock 即可离线使用；如需本地 VLM 模式，在 `sidecar/.venv` 内 `pip install torch transformers` 并按 `models/manifest.json` 下载权重。本机 `I:\AI\SimpaiViewer_v2.0.2\` 为含权重的完整部署。
 
 ## v2.0.1（2026-08-13）
 
