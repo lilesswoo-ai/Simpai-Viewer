@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Windows.Input;
+using Diffusion.Toolkit.AI;
 using Diffusion.Toolkit.Services;
 
 namespace Diffusion.Toolkit.Models;
@@ -268,6 +269,13 @@ public class SettingsModel : BaseNotify
     {
         get;
         set => SetField(ref field, value);
+    }
+
+    private Diffusion.Toolkit.AI.AiSettings? _aiSettings;
+    public Diffusion.Toolkit.AI.AiSettings? AiSettings
+    {
+        get => _aiSettings;
+        set => SetField(ref _aiSettings, value);
     }
 
 

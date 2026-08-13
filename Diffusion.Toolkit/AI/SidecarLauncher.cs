@@ -13,6 +13,7 @@ namespace Diffusion.Toolkit.AI;
 public static class SidecarLauncher
 {
     private static Process? _process;
+    private static readonly object _lock = new();
 
     public static string ResolveSidecarDir(AiSettings ai)
     {
@@ -29,56 +30,72 @@ public static class SidecarLauncher
         return "python";
     }
 
-    public static bool IsRunning => _process != null && !_process.HasExited;
+    public static bool IsRunning
+    {
+        get { lock (_lock) return _process != null && !_process.HasExited; }
+    }
 
     public static Process? Start(AiSettings ai)
     {
-        if (IsRunning) return _process;
-
-        var dir = ResolveSidecarDir(ai);
-        if (!Directory.Exists(dir))
-            throw new DirectoryNotFoundException($"未找到 Sidecar 目录：{dir}");
-
-        var python = ResolvePythonExe(ai);
-        var url = ai?.SidecarBaseUrl ?? "http://127.0.0.1:8765";
-        var uri = new Uri(url);
-        var host = uri.Host;
-        var port = uri.Port;
-
-        var psi = new ProcessStartInfo
+        lock (_lock)
         {
-            FileName = python,
-            Arguments = $"-m uvicorn app.main:app --host {host} --port {port}",
-            WorkingDirectory = dir,
-            UseShellExecute = false,
-            CreateNoWindow = true,
-            RedirectStandardOutput = false,
-            RedirectStandardError = false
-        };
+            if (_process != null && !_process.HasExited) return _process;
 
-        _process = Process.Start(psi);
-        return _process;
+            var dir = ResolveSidecarDir(ai);
+            if (!Directory.Exists(dir))
+                throw new DirectoryNotFoundException($"未找到 Sidecar 目录：{dir}");
+
+            var python = ResolvePythonExe(ai);
+            var url = ai?.SidecarBaseUrl ?? "http://127.0.0.1:8765";
+            var uri = new Uri(url);
+            var host = uri.Host;
+            var port = uri.Port;
+
+            var psi = new ProcessStartInfo
+            {
+                FileName = python,
+                Arguments = $"-m uvicorn app.main:app --host {host} --port {port}",
+                WorkingDirectory = dir,
+                UseShellExecute = false,
+                CreateNoWindow = true,
+                RedirectStandardOutput = false,
+                RedirectStandardError = false
+            };
+
+            var p = Process.Start(psi)!;
+            p.EnableRaisingEvents = true;
+            p.Exited += OnExited;
+            _process = p;
+            return _process;
+        }
     }
 
     public static void Stop()
     {
-        if (_process == null) return;
-        try
+        Process? proc;
+        lock (_lock)
         {
-            if (!_process.HasExited)
-            {
-                _process.Kill();
-                _process.WaitForExit(5000);
-            }
-        }
-        catch
-        {
-            // best effort
-        }
-        finally
-        {
-            _process.Dispose();
+            proc = _process;
             _process = null;
         }
+        if (proc == null) return;
+        try
+        {
+            if (!proc.HasExited) { proc.Kill(); proc.WaitForExit(5000); }
+        }
+        catch { }
+        finally { try { proc.Dispose(); } catch { } }
+    }
+
+    private static void OnExited(object? sender, EventArgs e)
+    {
+        if (sender is not Process p) return;
+        bool shouldDispose;
+        lock (_lock)
+        {
+            shouldDispose = (_process == p);
+            if (shouldDispose) _process = null;
+        }
+        if (shouldDispose) { try { p.Dispose(); } catch { } }
     }
 }

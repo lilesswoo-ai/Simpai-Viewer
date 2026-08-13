@@ -115,6 +115,7 @@ namespace Diffusion.Toolkit.Pages
 
             _model.Theme = _settings.Theme;
             _model.Culture = _settings.Culture;
+            _model.AiSettings = _settings.AiSettings;
             _model.SetPristine();
         }
 
@@ -403,6 +404,8 @@ namespace Diffusion.Toolkit.Pages
 
                 _settings.Culture = _model.Culture;
 
+                _settings.AiSettings = _model.AiSettings;
+
             }
         }
 
@@ -471,11 +474,11 @@ namespace Diffusion.Toolkit.Pages
             }
         }
 
-        private void AiStopButton_Click(object sender, RoutedEventArgs e)
+        private async void AiStopButton_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                SidecarLauncher.Stop();
+                await Task.Run(() => SidecarLauncher.Stop());
                 AiSidecarStatusText.Text = "Sidecar 已停止";
             }
             catch (Exception ex)
